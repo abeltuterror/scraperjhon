@@ -127,3 +127,11 @@ pip install -r requirements.txt
 python scraper.py
 deactivate
 ```
+
+
+## Este es el que vale
+```bash
+
+python pro.py
+
+```

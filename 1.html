@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convocatorias Perú — Empleo Público en un Solo Lugar</title>
+    <meta name="description" content="Encuentra convocatorias del Estado peruano. Filtra, analiza y postula más rápido con inteligencia artificial.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    peru: { red: '#D91023', dark: '#9B0A1A', light: '#FFF1F2', glow: '#FECDD3' },
+                    slate: { 850: '#162032' }
+                },
+                fontFamily: { heading: ['Outfit','sans-serif'], body: ['DM Sans','sans-serif'] }
+            }
+        }
+    }
+    </script>
+    <style>
+        :root {
+            --red: #D91023; --dark-red: #9B0A1A; --light-red: #FFF1F2;
+            --bg: #F8F9FB; --card: #FFFFFF; --border: #E5E7EB;
+            --text: #111827; --muted: #6B7280;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', sans-serif; }
+
+        /* Patrón andino sutil */
+        .andean-pattern {
+            background-image:
+                linear-gradient(30deg, rgba(217,16,35,0.04) 12%, transparent 12.5%, transparent 87%, rgba(217,16,35,0.04) 87.5%),
+                linear-gradient(150deg, rgba(217,16,35,0.04) 12%, transparent 12.5%, transparent 87%, rgba(217,16,35,0.04) 87.5%),
+                linear-gradient(30deg, rgba(217,16,35,0.04) 12%, transparent 12.5%, transparent 87%, rgba(217,16,35,0.04) 87.5%),
+                linear-gradient(150deg, rgba(217,16,35,0.04) 12%, transparent 12.5%, transparent 87%, rgba(217,16,35,0.04) 87.5%);
+            background-size: 80px 140px;
+            background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+        }
+
+        /* Hero animado */
+        .hero-bg {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #1A1A2E 70%, #16213E 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(217,16,35,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(217,16,35,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(100,116,139,0.1) 0%, transparent 50%);
+        }
+        .hero-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D91023' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Animaciones de entrada */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* Tarjetas con hover */
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+
+        /* Barra de progreso animada */
+        .progress-bar { transition: width 1s ease; }
+
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+        /* Chat bubbles */
+        .chat-bubble { animation: bubbleIn 0.3s ease; }
+        @keyframes bubbleIn { from { opacity:0; transform:translateY(10px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+        /* Pulse del botón IA */
+        .pulse-ring {
+            animation: pulseRing 2s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(217,16,35,0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(217,16,35,0); }
+            100% { box-shadow: 0 0 0 0 rgba(217,16,35,0); }
+        }
+
+        /* Float animation */
+        .float { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+
+        /* Tags */
+        .tag { display:inline-flex; align-items:center; padding:2px 10px; border-radius:9999px; font-size:0.75rem; font-weight:600; }
+
+        /* Modal overlay */
+        .modal-overlay {
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Panel deslizante */
+        .slide-panel { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .slide-panel.closed { transform: translateX(100%); }
+
+        /* Estadísticas animadas del hero */
+        .stat-glow { text-shadow: 0 0 30px rgba(217,16,35,0.3); }
+
+        /* Inputs estilizados */
+        .filter-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        /* Toast */
+        .toast-enter { animation: toastIn 0.4s ease; }
+        @keyframes toastIn { from { transform:translateX(100%); opacity:0; } to { transform:translateX(0); opacity:1; } }
+        .toast-exit { animation: toastOut 0.3s ease forwards; }
+        @keyframes toastOut { to { transform:translateX(100%); opacity:0; } }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { transition: none; opacity: 1; transform: none; }
+            .card-hover { transition: none; }
+            .card-hover:hover { transform: none; }
+            .float { animation: none; }
+            .pulse-ring { animation: none; }
+        }
+
+        /* Navegación activa */
+        .nav-link { position:relative; }
+        .nav-link::after {
+            content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
+            background:var(--red); transition:width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+        /* Línea decorativa roja */
+        .red-line { width:60px; height:4px; background:var(--red); border-radius:2px; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- ====== NAVEGACIÓN ====== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background:transparent;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="#" class="flex items-center gap-2 group" onclick="showView('home')">
+                <div class="w-9 h-9 bg-peru-red rounded-lg flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fas fa-landmark text-white text-sm"></i>
+                </div>
+                <span class="font-heading font-bold text-lg text-white" id="nav-logo-text">Convocatorias Perú</span>
+            </a>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#convocatorias" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Convocatorias</a>
+                <button onclick="openAI()" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Asistente IA</button>
+                <button onclick="openUserPanel()" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Mi Panel</button>
+                <button onclick="openAdmin()" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Admin</button>
+                <button onclick="openUserPanel()" class="ml-2 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors" aria-label="Perfil de usuario">
+                    <i class="fas fa-user text-white text-sm"></i>
+                </button>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-white text-xl" onclick="toggleMobile()" aria-label="Menú móvil">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Menú móvil -->
+    <div id="mobile-menu" class="md:hidden hidden bg-slate-900/95 backdrop-blur-lg border-t border-white/10">
+        <div class="px-4 py-3 space-y-2">
+            <a href="#convocatorias" onclick="toggleMobile()" class="block py-2 text-white/80 hover:text-white text-sm">Convocatorias</a>
+            <button onclick="openAI();toggleMobile()" class="block w-full text-left py-2 text-white/80 hover:text-white text-sm">Asistente IA</button>
+            <button onclick="openUserPanel();toggleMobile()" class="block w-full text-left py-2 text-white/80 hover:text-white text-sm">Mi Panel</button>
+            <button onclick="openAdmin();toggleMobile()" class="block w-full text-left py-2 text-white/80 hover:text-white text-sm">Admin</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="hero-bg min-h-screen flex items-center relative">
+    <div class="absolute inset-0 andean-pattern opacity-50"></div>
+    <!-- Formas decorativas flotantes -->
+    <div class="absolute top-20 right-10 w-72 h-72 bg-peru-red/5 rounded-full blur-3xl float"></div>
+    <div class="absolute bottom-20 left-10 w-96 h-96 bg-peru-red/3 rounded-full blur-3xl float" style="animation-delay:-3s"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-2 bg-peru-red/10 border border-peru-red/20 rounded-full px-4 py-1.5 mb-6 reveal">
+                <span class="w-2 h-2 bg-peru-red rounded-full animate-pulse"></span>
+                <span class="text-peru-red text-sm font-medium">Plataforma actualizada en tiempo real</span>
+            </div>
+            <h1 class="font-heading font-900 text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6 reveal reveal-delay-1">
+                Encuentra convocatorias del Estado en un solo lugar
+            </h1>
+            <p class="text-lg sm:text-xl text-slate-300 mb-10 max-w-xl reveal reveal-delay-2">
+                Filtra, analiza y postula más rápido. Centralizamos todas las ofertas laborales públicas del Perú para ti.
+            </p>
+
+            <!-- Buscador principal -->
+            <div class="reveal reveal-delay-3">
+                <div class="flex flex-col sm:flex-row gap-3 max-w-2xl">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input id="hero-search" type="text" placeholder="Buscar por puesto, entidad o palabra clave..."
+                            class="w-full pl-11 pr-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-peru-red/50 focus:bg-white/15 transition-all text-sm"
+                            onkeydown="if(event.key==='Enter')heroSearch()">
+                    </div>
+                    <button onclick="heroSearch()" class="px-8 py-4 bg-peru-red hover:bg-peru-dark text-white font-semibold rounded-xl transition-colors shadow-lg shadow-peru-red/20 flex items-center justify-center gap-2">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats rápidos -->
+            <div class="flex flex-wrap gap-8 mt-12 reveal" style="transition-delay:0.5s">
+                <div>
+                    <div class="font-heading font-800 text-3xl text-white stat-glow" id="stat-conv">0</div>
+                    <div class="text-slate-400 text-sm mt-1">Convocatorias activas</div>
+                </div>
+                <div>
+                    <div class="font-heading font-800 text-3xl text-white stat-glow" id="stat-ent">0</div>
+                    <div class="text-slate-400 text-sm mt-1">Entidades públicas</div>
+                </div>
+                <div>
+                    <div class="font-heading font-800 text-3xl text-white stat-glow" id="stat-ubi">0</div>
+                    <div class="text-slate-400 text-sm mt-1">Ubicaciones</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 animate-bounce">
+        <span class="text-xs">Explorar</span>
+        <i class="fas fa-chevron-down text-sm"></i>
+    </div>
+</header>
+
+<!-- ====== FILTROS ====== -->
+<section id="convocatorias" class="py-12 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-heading font-700 text-xl text-gray-900">Filtros avanzados</h2>
+            <button onclick="clearFilters()" class="text-sm text-peru-red hover:underline font-medium">Limpiar filtros</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <select id="f-ubicacion" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Ubicación</option>
+                <option>Lima</option><option>Arequipa</option><option>Cusco</option><option>La Libertad</option><option>Piura</option><option>Junín</option><option>Lambayeque</option>
+            </select>
+            <select id="f-entidad" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Entidad</option>
+                <option>Ministerio de Educación</option><option>Ministerio de Salud</option><option>Municipalidad de Lima</option><option>SUNAT</option><option>RENIEC</option><option>Poder Judicial</option><option>SERVIR</option><option>MINEM</option><option>MINCETUR</option>
+            </select>
+            <select id="f-contrato" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Tipo de contrato</option>
+                <option>CAS</option><option>D.L. 728</option><option>D.L. 276</option>
+            </select>
+            <select id="f-salario" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Rango salarial</option>
+                <option value="2000">Hasta S/ 2,000</option><option value="3500">Hasta S/ 3,500</option><option value="5000">Hasta S/ 5,000</option><option value="8000">Hasta S/ 8,000</option><option value="99999">Más de S/ 8,000</option>
+            </select>
+            <select id="f-nivel" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Nivel</option>
+                <option>Técnico</option><option>Universitario</option><option>Maestría</option>
+            </select>
+            <select id="f-fecha" onchange="applyFilters()" class="filter-select w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="">Fecha de publicación</option>
+                <option value="7">Última semana</option><option value="15">Últimos 15 días</option><option value="30">Último mes</option>
+            </select>
+        </div>
+        <!-- Filtros activos -->
+        <div id="active-filters" class="flex flex-wrap gap-2 mt-4 hidden"></div>
+    </div>
+</section>
+
+<!-- ====== LISTADO DE CONVOCATORIAS ====== -->
+<main class="py-10" style="background:var(--bg)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="font-heading font-700 text-2xl text-gray-900">Convocatorias disponibles</h2>
+                <p class="text-sm text-gray-500 mt-1" id="results-count">Mostrando 0 resultados</p>
+            </div>
+            <select id="sort-order" onchange="applyFilters()" class="filter-select px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30 text-gray-700">
+                <option value="recientes">Más recientes</option>
+                <option value="limite">Próximo a vencer</option>
+                <option value="salario-alto">Mayor salario</option>
+                <option value="salario-bajo">Menor salario</option>
+            </select>
+        </div>
+        <div id="convocatorias-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Se renderiza dinámicamente -->
+        </div>
+        <div id="no-results" class="hidden text-center py-20">
+            <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+            <h3 class="font-heading font-600 text-xl text-gray-500">No se encontraron convocatorias</h3>
+            <p class="text-gray-400 mt-2 text-sm">Intenta ajustar los filtros o buscar otro término</p>
+        </div>
+    </div>
+</main>
+
+<!-- ====== MODAL DETALLE ====== -->
+<div id="detail-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeDetail()"></div>
+    <div class="absolute inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl overflow-y-auto slide-panel closed" id="detail-panel">
+        <div id="detail-content" class="p-6 sm:p-8">
+            <!-- Se renderiza dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<!-- ====== PANEL IA ====== -->
+<div id="ai-panel" class="fixed bottom-4 right-4 z-40 hidden" style="width:380px;max-width:calc(100vw - 2rem);">
+    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col" style="height:520px;">
+        <div class="bg-gradient-to-r from-peru-red to-peru-dark px-5 py-4 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-robot text-white text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-white font-heading font-600 text-sm">Asistente IA</div>
+                    <div class="text-white/60 text-xs">Recomendaciones inteligentes</div>
+                </div>
+            </div>
+            <button onclick="closeAI()" class="text-white/60 hover:text-white transition-colors" aria-label="Cerrar asistente">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="ai-messages" class="flex-1 overflow-y-auto p-4 space-y-3" style="scroll-behavior:smooth;"></div>
+        <div class="p-3 border-t border-gray-100 shrink-0">
+            <div class="flex gap-2">
+                <input id="ai-input" type="text" placeholder="Escribe tu consulta..." class="flex-1 px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30" onkeydown="if(event.key==='Enter')sendAI()">
+                <button onclick="sendAI()" class="px-4 py-2.5 bg-peru-red hover:bg-peru-dark text-white rounded-xl transition-colors" aria-label="Enviar mensaje">
+                    <i class="fas fa-paper-plane text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Botón flotante IA -->
+<button id="ai-fab" onclick="openAI()" class="fixed bottom-6 right-6 z-30 w-14 h-14 bg-peru-red hover:bg-peru-dark text-white rounded-full shadow-lg shadow-peru-red/30 flex items-center justify-center transition-all pulse-ring" aria-label="Abrir asistente IA">
+    <i class="fas fa-robot text-xl"></i>
+</button>
+
+<!-- ====== PANEL USUARIO ====== -->
+<div id="user-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeUserPanel()"></div>
+    <div class="absolute inset-y-0 right-0 w-full max-w-xl bg-white shadow-2xl overflow-y-auto slide-panel closed" id="user-panel">
+        <div class="p-6 sm:p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-heading font-700 text-2xl">Mi Panel</h2>
+                <button onclick="closeUserPanel()" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Cerrar panel">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="switchUserTab('guardadas')" class="user-tab px-4 py-2.5 text-sm font-medium border-b-2 border-peru-red text-peru-red" data-tab="guardadas">Guardadas</button>
+                <button onclick="switchUserTab('postulaciones')" class="user-tab px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="postulaciones">Postulaciones</button>
+                <button onclick="switchUserTab('alertas')" class="user-tab px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="alertas">Alertas</button>
+            </div>
+            <div id="user-tab-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== PANEL ADMIN ====== -->
+<div id="admin-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeAdmin()"></div>
+    <div class="absolute inset-0 bg-white overflow-y-auto slide-panel closed" id="admin-panel">
+        <div class="max-w-5xl mx-auto p-6 sm:p-8">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="font-heading font-700 text-2xl">Panel de Administración</h2>
+                    <p class="text-gray-500 text-sm mt-1">Gestiona convocatorias y consulta estadísticas</p>
+                </div>
+                <button onclick="closeAdmin()" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Cerrar admin">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <!-- Admin tabs -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="switchAdminTab('lista')" class="admin-tab px-4 py-2.5 text-sm font-medium border-b-2 border-peru-red text-peru-red" data-tab="lista">Convocatorias</button>
+                <button onclick="switchAdminTab('nueva')" class="admin-tab px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="nueva">Nueva convocatoria</button>
+                <button onclick="switchAdminTab('stats')" class="admin-tab px-4 py-2.5 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="stats">Estadísticas</button>
+            </div>
+            <div id="admin-tab-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== TOASTS ====== -->
+<div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2" style="max-width:360px;"></div>
+
+<!-- ====== FOOTER ====== -->
+<footer class="bg-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-10">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 bg-peru-red rounded-lg flex items-center justify-center"><i class="fas fa-landmark text-white text-sm"></i></div>
+                    <span class="font-heading font-bold">Convocatorias Perú</span>
+                </div>
+                <p class="text-slate-400 text-sm leading-relaxed">Centralizamos las convocatorias del Estado peruano para que encuentres tu empleo público más rápido y fácil.</p>
+            </div>
+            <div>
+                <h4 class="font-heading font-600 text-sm uppercase tracking-wider text-slate-300 mb-4">Plataforma</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#convocatorias" class="hover:text-white transition-colors">Convocatorias</a></li>
+                    <li><a href="#" onclick="openAI()" class="hover:text-white transition-colors">Asistente IA</a></li>
+                    <li><a href="#" onclick="openUserPanel()" class="hover:text-white transition-colors">Mi Panel</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-heading font-600 text-sm uppercase tracking-wider text-slate-300 mb-4">Recursos</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Guía para postular</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Tipos de contrato</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">SERVIR</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-heading font-600 text-sm uppercase tracking-wider text-slate-300 mb-4">Contacto</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li><i class="fas fa-envelope mr-2 text-peru-red"></i>contacto@convocatoriasperu.gob.pe</li>
+                    <li><i class="fas fa-phone mr-2 text-peru-red"></i>(01) 234-5678</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                    <a href="#" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-peru-red flex items-center justify-center transition-colors" aria-label="Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-peru-red flex items-center justify-center transition-colors" aria-label="Twitter"><i class="fab fa-twitter text-sm"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-lg bg-white/10 hover:bg-peru-red flex items-center justify-center transition-colors" aria-label="LinkedIn"><i class="fab fa-linkedin-in text-sm"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-slate-500 text-xs">&copy; 2025 Convocatorias Perú. Todos los derechos reservados.</p>
+            <p class="text-slate-500 text-xs">Datos actualizados desde fuentes públicas del Estado Peruano</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ==========================
+// DATOS DE CONVOCATORIAS
+// ==========================
+const convocatoriasData = [
+    {
+        id: 1, titulo: "Especialista en Tecnologías de la Información", entidad: "Ministerio de Educación", ubicacion: "Lima",
+        sueldo: 5500, fechaPub: "2025-01-14", fechaLimite: "2025-02-14", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "El Ministerio de Educación requiere un profesional en TI para liderar proyectos de transformación digital en la sede central.",
+        requisitos: ["Título profesional en Ingeniería de Sistemas o afines", "3 años de experiencia en gestión de proyectos TI", "Conocimientos en metodologías ágiles Scrum/Kanban", "Certificación PMP o similar (deseable)"],
+        funciones: ["Liderar proyectos de transformación digital", "Coordinar con áreas usuarias los requerimientos", "Elaborar documentos técnicos y TDR", "Supervisar el desarrollo e implementación de sistemas"],
+        documentos: ["Curriculum vitae actualizado", "Copia de título profesional", "Certificados de experiencia", "Declaración jurada de no tener antecedentes penales"],
+        linkOficial: "https://www.gob.pe/minedu", modalidad: "Presencial"
+    },
+    {
+        id: 2, titulo: "Asistente Administrativo", entidad: "Municipalidad de Lima", ubicacion: "Lima",
+        sueldo: 2800, fechaPub: "2025-01-12", fechaLimite: "2025-01-30", tipoContrato: "CAS", nivel: "Técnico",
+        descripcion: "La Municipalidad de Lima necesita un asistente administrativo para apoyar en la gestión documentaria y trámite interno.",
+        requisitos: ["Título técnico en Administración o afines", "1 año de experiencia en labores administrativas", "Manejo de paquete Office a nivel intermedio", "Conocimiento en trámite documentario"],
+        funciones: ["Recepción y registro de documentos", "Archivo y control de expedientes", "Apoyo en la elaboración de reportes", "Coordinación con áreas internas"],
+        documentos: ["Curriculum vitae", "Copia de título técnico", "Certificados de experiencia", "Recibo de luz o agua"],
+        linkOficial: "https://www.munlima.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 3, titulo: "Abogado Especialista en Contrataciones", entidad: "SUNAT", ubicacion: "Lima",
+        sueldo: 7200, fechaPub: "2025-01-10", fechaLimite: "2025-02-10", tipoContrato: "D.L. 728", nivel: "Universitario",
+        descripcion: "SUNAT requiere abogado especialista para el área de contrataciones públicas con experiencia en normativa vigente.",
+        requisitos: ["Título de Abogado", "Colegiatura habilitada", "4 años de experiencia en contrataciones del Estado", "Especialización en Ley de Contrataciones del Estado", "Conocimiento en.normativa anticorrupción"],
+        funciones: ["Asesoría legal en procesos de contratación", "Revisión de bases y contratos", "Elaboración de informes legales", "Capacitación en normativa de contrataciones"],
+        documentos: ["Curriculum vitae", "Copia de título profesional", "Colegiatura y habilitación", "Certificados de especialización", "Certificados de trabajo"],
+        linkOficial: "https://www.sunat.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 4, titulo: "Enfermera(o) Especializada en Salud Pública", entidad: "Ministerio de Salud", ubicacion: "Arequipa",
+        sueldo: 4200, fechaPub: "2025-01-13", fechaLimite: "2025-02-05", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "El MINSA necesita profesional de enfermería para fortalecer las acciones de prevención y promoción de la salud en la DIRESA Arequipa.",
+        requisitos: ["Título profesional de Enfermera(o)", "Colegiatura y habilitación profesional", "2 años de experiencia en salud pública", "Conocimiento en vigilancia epidemiológica"],
+        funciones: ["Ejecutar acciones de prevención y promoción de la salud", "Realizar visitas domiciliarias", "Participar en campañas de salud", "Elaborar informes epidemiológicos"],
+        documentos: ["Curriculum vitae", "Copia de título profesional", "Colegiatura habilitada", "Certificados de experiencia", "Certificado de antecedentes penales"],
+        linkOficial: "https://www.gob.pe/minsa", modalidad: "Presencial"
+    },
+    {
+        id: 5, titulo: "Analista de Datos", entidad: "RENIEC", ubicacion: "Lima",
+        sueldo: 6000, fechaPub: "2025-01-11", fechaLimite: "2025-02-20", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "RENIEC busca analista de datos para fortalecer la toma de decisiones basada en evidencia en la gestión institucional.",
+        requisitos: ["Título profesional en Estadística, Ingeniería o afines", "2 años de experiencia en análisis de datos", "Manejo avanzado de Python, R o SQL", "Conocimiento en herramientas de visualización (Power BI, Tableau)"],
+        funciones: ["Analizar grandes volúmenes de datos institucionales", "Crear dashboards y reportes ejecutivos", "Proponer mejoras basadas en hallazgos", "Apoyar en la implementación de gobierno de datos"],
+        documentos: ["Curriculum vitae actualizado", "Copia de título profesional", "Certificados de experiencia", "Portafolio de proyectos (deseable)"],
+        linkOficial: "https://www.reniec.gob.pe", modalidad: "Híbrida"
+    },
+    {
+        id: 6, titulo: "Contador Público", entidad: "Poder Judicial", ubicacion: "La Libertad",
+        sueldo: 4800, fechaPub: "2025-01-09", fechaLimite: "2025-01-28", tipoContrato: "D.L. 276", nivel: "Universitario",
+        descripcion: "El Poder Judicial requiere contador público para el área de administración y presupuesto de la Corte Superior de La Libertad.",
+        requisitos: ["Título de Contador Público", "Colegiatura y habilitación", "3 años de experiencia en contabilidad gubernamental", "Conocimiento en SIAF y sistema presupuestal"],
+        funciones: ["Registrar operaciones contables", "Elaborar estados financieros", "Conciliaciones bancarias", "Apoyo en la formulación presupuestal"],
+        documentos: ["Curriculum vitae", "Título profesional", "Colegiatura habilitada", "Certificados de trabajo", "Declaración jurada de ingresos"],
+        linkOficial: "https://www.pj.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 7, titulo: "Ingeniero de Seguridad y Salud en el Trabajo", entidad: "MINEM", ubicacion: "Cusco",
+        sueldo: 5800, fechaPub: "2025-01-08", fechaLimite: "2025-02-08", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "El Ministerio de Energía y Minas requiere profesional para supervisar el cumplimiento de normas de seguridad en el sector minero.",
+        requisitos: ["Título profesional en Ingeniería de Seguridad o afines", "3 años de experiencia en seguridad minera", "Conocimiento de la normativa de seguridad y salud en el trabajo", "Disponibilidad para viajar"],
+        funciones: ["Supervisar cumplimiento de normas de seguridad", "Realizar inspecciones en unidades mineras", "Elaborar informes de supervisión", "Capacitar en seguridad y salud ocupacional"],
+        documentos: ["Curriculum vitae", "Título profesional", "Certificados de experiencia", "Certificado de salud ocupacional"],
+        linkOficial: "https://www.gob.pe/minem", modalidad: "Presencial"
+    },
+    {
+        id: 8, titulo: "Especialista en Comercio Exterior", entidad: "MINCETUR", ubicacion: "Lima",
+        sueldo: 6500, fechaPub: "2025-01-07", fechaLimite: "2025-02-15", tipoContrato: "D.L. 728", nivel: "Maestría",
+        descripcion: "MINCETUR necesita especialista con maestría para fortalecer las negociaciones comerciales internacionales del país.",
+        requisitos: ["Título profesional en Economía, Negocios Internacionales o afines", "Maestría en Comercio Internacional o Relaciones Económicas", "4 años de experiencia en comercio exterior", "Inglés avanzado"],
+        funciones: ["Participar en negociaciones de acuerdos comerciales", "Analizar tendencias del comercio internacional", "Elaborar propuestas de política comercial", "Coordinar con misiones diplomáticas"],
+        documentos: ["Curriculum vitae", "Título profesional y maestría", "Certificados de experiencia", "Certificado de idioma inglés", "Colegiatura"],
+        linkOficial: "https://www.gob.pe/mincetur", modalidad: "Presencial"
+    },
+    {
+        id: 9, titulo: "Técnico en Soporte Informático", entidad: "SERVIR", ubicacion: "Lima",
+        sueldo: 2500, fechaPub: "2025-01-15", fechaLimite: "2025-02-05", tipoContrato: "CAS", nivel: "Técnico",
+        descripcion: "SERVIR requiere técnico para brindar soporte informático a usuarios y mantener la infraestructura tecnológica de la entidad.",
+        requisitos: ["Título técnico en Computación e Informática o afines", "1 año de experiencia en soporte técnico", "Conocimiento en redes, Windows Server y Active Directory", "Capacidad para resolver problemas bajo presión"],
+        funciones: ["Brindar soporte técnico a usuarios", "Mantenimiento preventivo y correctivo de equipos", "Gestión de usuarios en Active Directory", "Apoyo en la implementación de soluciones tecnológicas"],
+        documentos: ["Curriculum vitae", "Título técnico", "Certificados de experiencia", "Declaración jurada"],
+        linkOficial: "https://www.servir.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 10, titulo: "Psicóloga(o) Organizacional", entidad: "SERVIR", ubicacion: "Lima",
+        sueldo: 5200, fechaPub: "2025-01-06", fechaLimite: "2025-02-06", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "SERVIR requiere psicólogo organizacional para fortalecer los procesos de gestión del talento humano en el servicio civil.",
+        requisitos: ["Título profesional en Psicología", "Colegiatura y habilitación", "2 años de experiencia en gestión del talento humano", "Conocimiento en evaluación de competencias y clima laboral"],
+        funciones: ["Diseñar e implementar procesos de evaluación de desempeño", "Realizar estudios de clima laboral", "Proponer estrategias de bienestar organizacional", "Capacitar en habilidades blandas"],
+        documentos: ["Curriculum vitae", "Título profesional", "Colegiatura habilitada", "Certificados de experiencia"],
+        linkOficial: "https://www.servir.gob.pe", modalidad: "Híbrida"
+    },
+    {
+        id: 11, titulo: "Arquitecto Supervisor de Obras", entidad: "Municipalidad de Lima", ubicacion: "Lima",
+        sueldo: 5500, fechaPub: "2025-01-05", fechaLimite: "2025-01-31", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "La Municipalidad de Lima necesita arquitecto para la supervisión de obras públicas en infraestructura urbana.",
+        requisitos: ["Título profesional en Arquitectura", "Colegiatura y habilitación", "3 años de experiencia en supervisión de obras", "Conocimiento en normas técnicas de edificación"],
+        funciones: ["Supervisar ejecución de obras públicas", "Verificar cumplimiento de planos y especificaciones", "Elaborar informes de avance de obra", "Coordina con contratistas y supervisores"],
+        documentos: ["Curriculum vitae", "Título profesional", "Colegiatura habilitada", "Certificados de obra"],
+        linkOficial: "https://www.munlima.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 12, titulo: "Economista Especialista en Presupuesto", entidad: "Ministerio de Educación", ubicacion: "Piura",
+        sueldo: 4600, fechaPub: "2025-01-04", fechaLimite: "2025-02-04", tipoContrato: "D.L. 276", nivel: "Universitario",
+        descripcion: "El MINEDU requiere economista para la Unidad de Presupuesto de la DRE Piura, con conocimiento en el sistema presupuestal público.",
+        requisitos: ["Título profesional en Economía", "2 años de experiencia en presupuesto público", "Manejo del SIAF-SP", "Conocimiento del sistema nacional de presupuesto"],
+        funciones: ["Formular y evaluar el presupuesto institucional", "Elaborar notas modificatorias", "Realizar seguimiento a la ejecución presupuestal", "Coordinar con la DNPP"],
+        documentos: ["Curriculum vitae", "Título profesional", "Certificados de experiencia", "Declaración jurada de ingresos"],
+        linkOficial: "https://www.gob.pe/minedu", modalidad: "Presencial"
+    },
+    {
+        id: 13, titulo: "Ingeniera Civil - Supervisora", entidad: "MINEM", ubicacion: "Junín",
+        sueldo: 7500, fechaPub: "2025-01-03", fechaLimite: "2025-02-12", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "El MINEM requiere ingeniera civil para supervisión de infraestructura energética en la región Junín.",
+        requisitos: ["Título profesional en Ingeniería Civil", "Colegiatura y habilitación", "4 años de experiencia en supervisión de obras civiles", "Disponibilidad para viajes frecuentes"],
+        funciones: ["Supervisar obras de infraestructura energética", "Verificar calidad de materiales y procesos", "Elaborar informes técnicos", "Garantizar cumplimiento de cronogramas"],
+        documentos: ["Curriculum vitae", "Título profesional", "Colegiatura habilitada", "Certificados de experiencia en obras"],
+        linkOficial: "https://www.gob.pe/minem", modalidad: "Presencial"
+    },
+    {
+        id: 14, titulo: "Comunicadora Social", entidad: "Ministerio de Salud", ubicacion: "Lambayeque",
+        sueldo: 3200, fechaPub: "2025-01-02", fechaLimite: "2025-01-29", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "El MINSA necesita comunicadora social para la Dirección Regional de Salud de Lambayeque, con foco en campañas de prevención.",
+        requisitos: ["Título profesional en Comunicación Social o Periodismo", "1 año de experiencia en comunicación institucional", "Manejo de redes sociales y diseño básico", "Redacción y ortografía impecables"],
+        funciones: ["Diseñar y ejecutar planes de comunicación", "Gestionar redes sociales institucionales", "Elaborar contenidos para campañas de salud", "Coordinar con medios de comunicación"],
+        documentos: ["Curriculum vitae", "Título profesional", "Portafolio de trabajos", "Certificados de experiencia"],
+        linkOficial: "https://www.gob.pe/minsa", modalidad: "Presencial"
+    },
+    {
+        id: 15, titulo: "Especialista en Gestión Ambiental", entidad: "MINCETUR", ubicacion: "Cusco",
+        sueldo: 5200, fechaPub: "2025-01-01", fechaLimite: "2025-02-01", tipoContrato: "CAS", nivel: "Maestría",
+        descripcion: "MINCETUR requiere especialista con formación en gestión ambiental para evaluar el impacto ambiental de proyectos turísticos.",
+        requisitos: ["Título profesional en Ingeniería Ambiental o afines", "Maestría en Gestión Ambiental", "3 años de experiencia en evaluación de impacto ambiental", "Conocimiento de la legislación ambiental peruana"],
+        funciones: ["Evaluar estudios de impacto ambiental", "Proponer medidas de mitigación ambiental", "Supervisar cumplimiento de compromisos ambientales", "Elaborar guías y manuales ambientales"],
+        documentos: ["Curriculum vitae", "Títulos profesionales", "Certificados de experiencia", "Colegiatura y habilitación"],
+        linkOficial: "https://www.gob.pe/mincetur", modalidad: "Presencial"
+    },
+    {
+        id: 16, titulo: "Digitador(a) de Datos", entidad: "RENIEC", ubicacion: "Lima",
+        sueldo: 1800, fechaPub: "2025-01-15", fechaLimite: "2025-01-27", tipoContrato: "CAS", nivel: "Técnico",
+        descripcion: "RENIEC requiere digitador para el ingreso y verificación de datos en los sistemas institucionales de registro civil.",
+        requisitos: ["Estudios técnicos en computación o secretariado", "6 meses de experiencia en digitación", "Velocidad de digitación mínima 40 palabras por minuto", "Manejo básico de Office"],
+        funciones: ["Ingresar datos al sistema de registro civil", "Verificar información registrada", "Mantener actualizada la base de datos", "Apoyar en procesos de digitalización"],
+        documentos: ["Curriculum vitae", "Certificado de estudios", "Certificados de experiencia"],
+        linkOficial: "https://www.reniec.gob.pe", modalidad: "Presencial"
+    },
+    {
+        id: 17, titulo: "Médico Cirujano - Servicio de Emergencia", entidad: "Ministerio de Salud", ubicacion: "Lima",
+        sueldo: 8500, fechaPub: "2025-01-14", fechaLimite: "2025-02-18", tipoContrato: "D.L. 728", nivel: "Universitario",
+        descripcion: "El MINSA necesita médicos cirujanos para el servicio de emergencia del Hospital Nacional Dos de Mayo.",
+        requisitos: ["Título de Médico Cirujano", "Colegiatura y habilitación", "3 años de experiencia en servicios de emergencia", "Especialización en Medicina de Emergencia y Desastres (deseable)"],
+        funciones: ["Atender pacientes en el servicio de emergencia", "Realizar procedimientos médicos de emergencia", "Elaborar historias clínicas", "Participar en turnos y guardias"],
+        documentos: ["Curriculum vitae", "Título profesional", "Colegiatura habilitada", "Certificados de experiencia", "Certificado SERUMS"],
+        linkOficial: "https://www.gob.pe/minsa", modalidad: "Presencial"
+    },
+    {
+        id: 18, titulo: "Ingeniero de Sistemas - Desarrollador", entidad: "SUNAT", ubicacion: "Lima",
+        sueldo: 6800, fechaPub: "2025-01-13", fechaLimite: "2025-02-25", tipoContrato: "CAS", nivel: "Universitario",
+        descripcion: "SUNAT busca ingeniero de sistemas especializado en desarrollo de software para modernizar las plataformas de recaudación tributaria.",
+        requisitos: ["Título profesional en Ingeniería de Sistemas o Software", "3 años de experiencia en desarrollo de software", "Dominio de Java, Spring Boot y microservicios", "Conocimiento en cloud computing (AWS/Azure)"],
+        funciones: ["Desarrollar y mantener aplicaciones tributarias", "Implementar microservicios y APIs", "Realizar pruebas de rendimiento y seguridad", "Documentar soluciones técnicas"],
+        documentos: ["Curriculum vitae", "Título profesional", "Certificados de experiencia", "Portafolio de proyectos"],
+        linkOficial: "https://www.sunat.gob.pe", modalidad: "Híbrida"
+    }
+];
+
+// ==========================
+// ESTADO DE LA APLICACIÓN
+// ==========================
+let state = {
+    convocatorias: JSON.parse(JSON.stringify(convocatoriasData)),
+    filtered: [],
+    saved: JSON.parse(localStorage.getItem('cp_saved') || '[]'),
+    postulations: JSON.parse(localStorage.getItem('cp_postulations') || '[]'),
+    alerts: JSON.parse(localStorage.getItem('cp_alerts') || '[]'),
+    aiMessages: [],
+    currentTab: 'guardadas',
+    adminTab: 'lista'
+};
+
+// ==========================
+// FUNCIONES DE RENDERIZADO
+// ==========================
+
+// Renderizar tarjetas de convocatorias
+function renderConvocatorias() {
+    const grid = document.getElementById('convocatorias-grid');
+    const noResults = document.getElementById('no-results');
+    const countEl = document.getElementById('results-count');
+
+    if (state.filtered.length === 0) {
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        countEl.textContent = 'No se encontraron resultados';
+        return;
+    }
+    noResults.classList.add('hidden');
+    countEl.textContent = `Mostrando ${state.filtered.length} resultado${state.filtered.length !== 1 ? 's' : ''}`;
+
+    grid.innerHTML = state.filtered.map((c, i) => {
+        const isSaved = state.saved.includes(c.id);
+        const daysLeft = Math.ceil((new Date(c.fechaLimite) - new Date()) / (1000*60*60*24));
+        const urgencyClass = daysLeft <= 3 ? 'bg-red-100 text-red-700' : daysLeft <= 7 ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700';
+        const contratoColors = { 'CAS': 'bg-blue-100 text-blue-700', 'D.L. 728': 'bg-purple-100 text-purple-700', 'D.L. 276': 'bg-emerald-100 text-emerald-700' };
+        const nivelColors = { 'Técnico': 'bg-orange-100 text-orange-700', 'Universitario': 'bg-cyan-100 text-cyan-700', 'Maestría': 'bg-violet-100 text-violet-700' };
+
+        return `
+        <article class="card-hover bg-white rounded-2xl border border-gray-100 p-5 flex flex-col reveal" style="transition-delay:${Math.min(i * 0.05, 0.4)}s">
+            <div class="flex items-start justify-between mb-3">
+                <div class="flex flex-wrap gap-1.5">
+                    <span class="tag ${contratoColors[c.tipoContrato] || 'bg-gray-100 text-gray-700'}">${c.tipoContrato}</span>
+                    <span class="tag ${nivelColors[c.nivel] || 'bg-gray-100 text-gray-700'}">${c.nivel}</span>
+                </div>
+                <button onclick="toggleSave(${c.id})" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors" aria-label="${isSaved ? 'Quitar de guardados' : 'Guardar convocatoria'}">
+                    <i class="fa${isSaved ? 's' : 'r'} fa-bookmark ${isSaved ? 'text-peru-red' : 'text-gray-300'}"></i>
+                </button>
+            </div>
+            <h3 class="font-heading font-600 text-base text-gray-900 mb-2 line-clamp-2 leading-snug">${c.titulo}</h3>
+            <div class="space-y-1.5 mb-4 text-sm text-gray-500 flex-1">
+                <div class="flex items-center gap-2"><i class="fas fa-building text-xs text-gray-400 w-4"></i><span class="truncate">${c.entidad}</span></div>
+                <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-xs text-gray-400 w-4"></i>${c.ubicacion}</div>
+                <div class="flex items-center gap-2"><i class="fas fa-money-bill-wave text-xs text-gray-400 w-4"></i><span class="font-semibold text-gray-800">S/ ${c.sueldo.toLocaleString()}</span></div>
+            </div>
+            <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-50">
+                <span class="tag ${urgencyClass}"><i class="fas fa-clock mr-1"></i>${daysLeft > 0 ? daysLeft + ' días' : 'Vencida'}</span>
+                <button onclick="openDetail(${c.id})" class="text-sm font-semibold text-peru-red hover:text-peru-dark transition-colors flex items-center gap-1">
+                    Ver detalles <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </article>`;
+    }).join('');
+
+    // Activar animaciones de entrada
+    requestAnimationFrame(() => {
+        grid.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    });
+}
+
+// Abrir detalle de convocatoria
+function openDetail(id) {
+    const c = state.convocatorias.find(x => x.id === id);
+    if (!c) return;
+    const isSaved = state.saved.includes(c.id);
+    const isPostulated = state.postulations.includes(c.id);
+    const daysLeft = Math.ceil((new Date(c.fechaLimite) - new Date()) / (1000*60*60*24));
+
+    document.getElementById('detail-content').innerHTML = `
+        <div class="flex items-center justify-between mb-6">
+            <span class="tag bg-peru-light text-peru-red text-sm">${c.tipoContrato} — ${c.nivel}</span>
+            <button onclick="closeDetail()" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors" aria-label="Cerrar detalle">
+                <i class="fas fa-times text-gray-500"></i>
+            </button>
+        </div>
+        <h2 class="font-heading font-700 text-2xl text-gray-900 mb-4">${c.titulo}</h2>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Entidad</div><div class="text-sm font-semibold text-gray-800">${c.entidad}</div></div>
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Ubicación</div><div class="text-sm font-semibold text-gray-800">${c.ubicacion}</div></div>
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Sueldo</div><div class="text-sm font-semibold text-gray-800">S/ ${c.sueldo.toLocaleString()}</div></div>
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Modalidad</div><div class="text-sm font-semibold text-gray-800">${c.modalidad}</div></div>
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Fecha límite</div><div class="text-sm font-semibold ${daysLeft <= 5 ? 'text-red-600' : 'text-gray-800'}">${formatDate(c.fechaLimite)} ${daysLeft <= 5 ? '('+daysLeft+' días)' : ''}</div></div>
+            <div class="bg-gray-50 rounded-xl p-3"><div class="text-xs text-gray-500 mb-1">Publicación</div><div class="text-sm font-semibold text-gray-800">${formatDate(c.fechaPub)}</div></div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="font-heading font-600 text-lg text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-align-left text-peru-red text-sm"></i> Descripción</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">${c.descripcion}</p>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="font-heading font-600 text-lg text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-check-circle text-peru-red text-sm"></i> Requisitos</h3>
+            <ul class="space-y-2">${c.requisitos.map(r => `<li class="flex items-start gap-2 text-sm text-gray-600"><i class="fas fa-check text-green-500 text-xs mt-1 shrink-0"></i><span>${r}</span></li>`).join('')}</ul>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="font-heading font-600 text-lg text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-tasks text-peru-red text-sm"></i> Funciones</h3>
+            <ul class="space-y-2">${c.funciones.map(f => `<li class="flex items-start gap-2 text-sm text-gray-600"><i class="fas fa-arrow-right text-peru-red text-xs mt-1 shrink-0"></i><span>${f}</span></li>`).join('')}</ul>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="font-heading font-600 text-lg text-gray-900 mb-3 flex items-center gap-2"><i class="fas fa-file-alt text-peru-red text-sm"></i> Documentos necesarios</h3>
+            <ul class="space-y-2">${c.documentos.map(d => `<li class="flex items-start gap-2 text-sm text-gray-600"><i class="fas fa-paperclip text-gray-400 text-xs mt-1 shrink-0"></i><span>${d}</span></li>`).join('')}</ul>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 sticky bottom-0 bg-white pt-4 border-t border-gray-100">
+            <button onclick="toggleSave(${c.id});openDetail(${c.id})" class="flex-1 px-5 py-3 rounded-xl border-2 ${isSaved ? 'border-peru-red bg-peru-light text-peru-red' : 'border-gray-200 text-gray-700 hover:bg-gray-50'} font-semibold text-sm transition-colors flex items-center justify-center gap-2">
+                <i class="fa${isSaved ? 's' : 'r'} fa-bookmark"></i> ${isSaved ? 'Guardado' : 'Guardar'}
+            </button>
+            <button onclick="postular(${c.id})" class="flex-1 px-5 py-3 rounded-xl ${isPostulated ? 'bg-green-600 hover:bg-green-700' : 'bg-peru-red hover:bg-peru-dark'} text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg ${isPostulated ? '' : 'shadow-peru-red/20'}">
+                <i class="fas fa-${isPostulated ? 'check-circle' : 'paper-plane'}"></i> ${isPostulated ? 'Postulado' : 'Postular'}
+            </button>
+        </div>
+        <a href="${c.linkOficial}" target="_blank" rel="noopener noreferrer" class="block text-center text-sm text-gray-500 hover:text-peru-red mt-3 transition-colors">
+            <i class="fas fa-external-link-alt mr-1"></i> Ver convocatoria oficial
+        </a>
+    `;
+
+    const modal = document.getElementById('detail-modal');
+    const panel = document.getElementById('detail-panel');
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => panel.classList.remove('closed'));
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+    const panel = document.getElementById('detail-panel');
+    panel.classList.add('closed');
+    setTimeout(() => {
+        document.getElementById('detail-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }, 400);
+}
+
+// ==========================
+// FILTROS Y BÚSQUEDA
+// ==========================
+function applyFilters() {
+    let results = [...state.convocatorias];
+    const search = (document.getElementById('hero-search').value || '').toLowerCase().trim();
+    const ubicacion = document.getElementById('f-ubicacion').value;
+    const entidad = document.getElementById('f-entidad').value;
+    const contrato = document.getElementById('f-contrato').value;
+    const salario = document.getElementById('f-salario').value;
+    const nivel = document.getElementById('f-nivel').value;
+    const fecha = document.getElementById('f-fecha').value;
+    const sort = document.getElementById('sort-order').value;
+
+    // Búsqueda por texto
+    if (search) {
+        results = results.filter(c =>
+            c.titulo.toLowerCase().includes(search) ||
+            c.entidad.toLowerCase().includes(search) ||
+            c.descripcion.toLowerCase().includes(search) ||
+            c.ubicacion.toLowerCase().includes(search)
+        );
+    }
+    if (ubicacion) results = results.filter(c => c.ubicacion === ubicacion);
+    if (entidad) results = results.filter(c => c.entidad === entidad);
+    if (contrato) results = results.filter(c => c.tipoContrato === contrato);
+    if (salario) results = results.filter(c => c.sueldo <= parseInt(salario));
+    if (nivel) results = results.filter(c => c.nivel === nivel);
+    if (fecha) {
+        const since = new Date();
+        since.setDate(since.getDate() - parseInt(fecha));
+        results = results.filter(c => new Date(c.fechaPub) >= since);
+    }
+
+    // Ordenar
+    if (sort === 'recientes') results.sort((a,b) => new Date(b.fechaPub) - new Date(a.fechaPub));
+    else if (sort === 'limite') results.sort((a,b) => new Date(a.fechaLimite) - new Date(b.fechaLimite));
+    else if (sort === 'salario-alto') results.sort((a,b) => b.sueldo - a.sueldo);
+    else if (sort === 'salario-bajo') results.sort((a,b) => a.sueldo - b.sueldo);
+
+    state.filtered = results;
+    renderConvocatorias();
+    renderActiveFilters();
+}
+
+function renderActiveFilters() {
+    const container = document.getElementById('active-filters');
+    const filters = [];
+    const ubicacion = document.getElementById('f-ubicacion').value;
+    const entidad = document.getElementById('f-entidad').value;
+    const contrato = document.getElementById('f-contrato').value;
+    const salario = document.getElementById('f-salario').value;
+    const nivel = document.getElementById('f-nivel').value;
+    const fecha = document.getElementById('f-fecha').value;
+
+    if (ubicacion) filters.push({ label: ubicacion, clear: () => { document.getElementById('f-ubicacion').value = ''; applyFilters(); } });
+    if (entidad) filters.push({ label: entidad, clear: () => { document.getElementById('f-entidad').value = ''; applyFilters(); } });
+    if (contrato) filters.push({ label: contrato, clear: () => { document.getElementById('f-contrato').value = ''; applyFilters(); } });
+    if (salario) filters.push({ label: `Hasta S/ ${parseInt(salario).toLocaleString()}`, clear: () => { document.getElementById('f-salario').value = ''; applyFilters(); } });
+    if (nivel) filters.push({ label: nivel, clear: () => { document.getElementById('f-nivel').value = ''; applyFilters(); } });
+    if (fecha) filters.push({ label: `Últimos ${fecha} días`, clear: () => { document.getElementById('f-fecha').value = ''; applyFilters(); } });
+
+    if (filters.length === 0) { container.classList.add('hidden'); return; }
+    container.classList.remove('hidden');
+    container.innerHTML = filters.map((f, i) =>
+        `<span class="tag bg-peru-light text-peru-red gap-1.5 cursor-pointer hover:bg-peru-glow transition-colors" onclick="window._clearFilter${i}()">${f.label} <i class="fas fa-times text-xs"></i></span>`
+    ).join('');
+    filters.forEach((f, i) => { window[`_clearFilter${i}`] = f.clear; });
+}
+
+function clearFilters() {
+    document.getElementById('hero-search').value = '';
+    document.getElementById('f-ubicacion').value = '';
+    document.getElementById('f-entidad').value = '';
+    document.getElementById('f-contrato').value = '';
+    document.getElementById('f-salario').value = '';
+    document.getElementById('f-nivel').value = '';
+    document.getElementById('f-fecha').value = '';
+    applyFilters();
+}
+
+function heroSearch() {
+    applyFilters();
+    document.getElementById('convocatorias').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ==========================
+// GUARDAR Y POSTULAR
+// ==========================
+function toggleSave(id) {
+    const idx = state.saved.indexOf(id);
+    if (idx > -1) { state.saved.splice(idx, 1); showToast('Convocatoria removida de guardados', 'info'); }
+    else { state.saved.push(id); showToast('Convocatoria guardada correctamente', 'success'); }
+    localStorage.setItem('cp_saved', JSON.stringify(state.saved));
+    renderConvocatorias();
+}
+
+function postular(id) {
+    if (state.postulations.includes(id)) { showToast('Ya has postulado a esta convocatoria', 'info'); return; }
+    state.postulations.push(id);
+    localStorage.setItem('cp_postulations', JSON.stringify(state.postulations));
+    showToast('Postulación registrada correctamente', 'success');
+    openDetail(id);
+}
+
+// ==========================
+// PANEL DE USUARIO
+// ==========================
+function openUserPanel() {
+    const modal = document.getElementById('user-modal');
+    const panel = document.getElementById('user-panel');
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => panel.classList.remove('closed'));
+    document.body.style.overflow = 'hidden';
+    switchUserTab(state.currentTab);
+}
+function closeUserPanel() {
+    document.getElementById('user-panel').classList.add('closed');
+    setTimeout(() => { document.getElementById('user-modal').classList.add('hidden'); document.body.style.overflow = ''; }, 400);
+}
+function switchUserTab(tab) {
+    state.currentTab = tab;
+    document.querySelectorAll('.user-tab').forEach(t => {
+        t.classList.toggle('border-peru-red', t.dataset.tab === tab);
+        t.classList.toggle('text-peru-red', t.dataset.tab === tab);
+        t.classList.toggle('border-transparent', t.dataset.tab !== tab);
+        t.classList.toggle('text-gray-500', t.dataset.tab !== tab);
+    });
+    const content = document.getElementById('user-tab-content');
+    if (tab === 'guardadas') {
+        const savedConvos = state.convocatorias.filter(c => state.saved.includes(c.id));
+        if (savedConvos.length === 0) {
+            content.innerHTML = '<div class="text-center py-12"><i class="far fa-bookmark text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 text-sm">No tienes convocatorias guardadas</p></div>';
+        } else {
+            content.innerHTML = savedConvos.map(c => `
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer" onclick="closeUserPanel();openDetail(${c.id})">
+                    <div class="w-10 h-10 bg-peru-light rounded-lg flex items-center justify-center shrink-0"><i class="fas fa-briefcase text-peru-red text-sm"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-semibold text-gray-800 truncate">${c.titulo}</div>
+                        <div class="text-xs text-gray-500">${c.entidad} · S/ ${c.sueldo.toLocaleString()}</div>
+                    </div>
+                    <button onclick="event.stopPropagation();toggleSave(${c.id});switchUserTab('guardadas')" class="text-peru-red hover:bg-red-50 w-8 h-8 rounded-lg flex items-center justify-center transition-colors" aria-label="Quitar de guardados"><i class="fas fa-trash-alt text-xs"></i></button>
+                </div>`).join('');
+        }
+    } else if (tab === 'postulaciones') {
+        const postConvos = state.convocatorias.filter(c => state.postulations.includes(c.id));
+        if (postConvos.length === 0) {
+            content.innerHTML = '<div class="text-center py-12"><i class="far fa-paper-plane text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 text-sm">No has postulado a ninguna convocatoria</p></div>';
+        } else {
+            content.innerHTML = postConvos.map(c => `
+                <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer" onclick="closeUserPanel();openDetail(${c.id})">
+                    <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center shrink-0"><i class="fas fa-check-circle text-green-500 text-sm"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-semibold text-gray-800 truncate">${c.titulo}</div>
+                        <div class="text-xs text-gray-500">${c.entidad} · S/ ${c.sueldo.toLocaleString()}</div>
+                    </div>
+                    <span class="tag bg-green-100 text-green-700 text-xs">Postulado</span>
+                </div>`).join('');
+        }
+    } else if (tab === 'alertas') {
+        content.innerHTML = `
+            <div class="mb-6">
+                <div class="flex gap-2 mb-4">
+                    <input id="alert-input" type="text" placeholder="Ej: Contador en Lima" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30">
+                    <button onclick="addAlert()" class="px-4 py-2.5 bg-peru-red hover:bg-peru-dark text-white rounded-xl text-sm font-semibold transition-colors">Crear</button>
+                </div>
+                <div id="alerts-list">
+                    ${state.alerts.length === 0 ? '<p class="text-gray-400 text-sm text-center py-6">Crea alertas para recibir notificaciones de nuevas convocatorias</p>' :
+                    state.alerts.map((a, i) => `
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl mb-2">
+                            <i class="fas fa-bell text-peru-red text-sm"></i>
+                            <span class="text-sm text-gray-700 flex-1">${a}</span>
+                            <button onclick="removeAlert(${i})" class="text-gray-400 hover:text-red-500 transition-colors" aria-label="Eliminar alerta"><i class="fas fa-times text-xs"></i></button>
+                        </div>`).join('')}
+                </div>
+            </div>`;
+    }
+}
+function addAlert() {
+    const input = document.getElementById('alert-input');
+    const val = input.value.trim();
+    if (!val) return;
+    state.alerts.push(val);
+    localStorage.setItem('cp_alerts', JSON.stringify(state.alerts));
+    input.value = '';
+    switchUserTab('alertas');
+    showToast('Alerta creada correctamente', 'success');
+}
+function removeAlert(i) {
+    state.alerts.splice(i, 1);
+    localStorage.setItem('cp_alerts', JSON.stringify(state.alerts));
+    switchUserTab('alertas');
+}
+
+// ==========================
+// PANEL ADMIN
+// ==========================
+function openAdmin() {
+    const modal = document.getElementById('admin-modal');
+    const panel = document.getElementById('admin-panel');
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => panel.classList.remove('closed'));
+    document.body.style.overflow = 'hidden';
+    switchAdminTab(state.adminTab);
+}
+function closeAdmin() {
+    document.getElementById('admin-panel').classList.add('closed');
+    setTimeout(() => { document.getElementById('admin-modal').classList.add('hidden'); document.body.style.overflow = ''; }, 400);
+}
+function switchAdminTab(tab) {
+    state.adminTab = tab;
+    document.querySelectorAll('.admin-tab').forEach(t => {
+        t.classList.toggle('border-peru-red', t.dataset.tab === tab);
+        t.classList.toggle('text-peru-red', t.dataset.tab === tab);
+        t.classList.toggle('border-transparent', t.dataset.tab !== tab);
+        t.classList.toggle('text-gray-500', t.dataset.tab !== tab);
+    });
+    const content = document.getElementById('admin-tab-content');
+
+    if (tab === 'lista') {
+        content.innerHTML = `
+            <div class="mb-4 flex items-center justify-between">
+                <span class="text-sm text-gray-500">${state.convocatorias.length} convocatorias registradas</span>
+                <button onclick="switchAdminTab('nueva')" class="px-4 py-2 bg-peru-red hover:bg-peru-dark text-white rounded-lg text-sm font-semibold transition-colors"><i class="fas fa-plus mr-1"></i> Nueva</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b border-gray-200 text-left">
+                        <th class="pb-3 font-semibold text-gray-700">Puesto</th>
+                        <th class="pb-3 font-semibold text-gray-700 hidden md:table-cell">Entidad</th>
+                        <th class="pb-3 font-semibold text-gray-700 hidden md:table-cell">Sueldo</th>
+                        <th class="pb-3 font-semibold text-gray-700">Acciones</th>
+                    </tr></thead>
+                    <tbody>${state.convocatorias.map(c => `
+                        <tr class="border-b border-gray-50 hover:bg-gray-50">
+                            <td class="py-3 pr-3"><div class="font-medium text-gray-800 truncate max-w-xs">${c.titulo}</div><div class="text-xs text-gray-400">${c.tipoContrato}</div></td>
+                            <td class="py-3 pr-3 hidden md:table-cell text-gray-600">${c.entidad}</td>
+                            <td class="py-3 pr-3 hidden md:table-cell text-gray-600">S/ ${c.sueldo.toLocaleString()}</td>
+                            <td class="py-3">
+                                <div class="flex gap-1">
+                                    <button onclick="closeAdmin();openDetail(${c.id})" class="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition-colors" aria-label="Ver detalle"><i class="fas fa-eye text-xs"></i></button>
+                                    <button onclick="deleteConvocatoria(${c.id})" class="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-colors" aria-label="Eliminar"><i class="fas fa-trash text-xs"></i></button>
+                                </div>
+                            </td>
+                        </tr>`).join('')}</tbody>
+                </table>
+            </div>`;
+    } else if (tab === 'nueva') {
+        content.innerHTML = `
+            <form id="admin-form" onsubmit="submitConvocatoria(event)" class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Título del puesto</label><input name="titulo" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Entidad</label><input name="entidad" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
+                        <select name="ubicacion" required class="filter-select w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30">
+                            <option value="">Seleccionar</option><option>Lima</option><option>Arequipa</option><option>Cusco</option><option>La Libertad</option><option>Piura</option><option>Junín</option><option>Lambayeque</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Sueldo (S/)</label><input name="sueldo" type="number" required min="0" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Tipo de contrato</label>
+                        <select name="tipoContrato" required class="filter-select w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30">
+                            <option value="">Seleccionar</option><option>CAS</option><option>D.L. 728</option><option>D.L. 276</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Nivel</label>
+                        <select name="nivel" required class="filter-select w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30">
+                            <option value="">Seleccionar</option><option>Técnico</option><option>Universitario</option><option>Maestría</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Fecha límite</label><input name="fechaLimite" type="date" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></div>
+                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Modalidad</label>
+                        <select name="modalidad" class="filter-select w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30">
+                            <option>Presencial</option><option>Híbrida</option><option>Remota</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label><textarea name="descripcion" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Requisitos (uno por línea)</label><textarea name="requisitos" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30" placeholder="Título profesional en...&#10;3 años de experiencia..."></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Funciones (una por línea)</label><textarea name="funciones" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Documentos (uno por línea)</label><textarea name="documentos" rows="2" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-peru-red/30"></textarea></div>
+                <button type="submit" class="w-full py-3 bg-peru-red hover:bg-peru-dark text-white font-semibold rounded-xl transition-colors shadow-lg shadow-peru-red/20">Publicar convocatoria</button>
+            </form>`;
+    } else if (tab === 'stats') {
+        const totalConvos = state.convocatorias.length;
+        const porContrato = {};
+        const porUbicacion = {};
+        const porNivel = {};
+        state.convocatorias.forEach(c => {
+            porContrato[c.tipoContrato] = (porContrato[c.tipoContrato] || 0) + 1;
+            porUbicacion[c.ubicacion] = (porUbicacion[c.ubicacion] || 0) + 1;
+            porNivel[c.nivel] = (porNivel[c.nivel] || 0) + 1;
+        });
+        const sueldoProm = Math.round(state.convocatorias.reduce((s,c) => s + c.sueldo, 0) / totalConvos);
+        const maxSueldo = Math.max(...state.convocatorias.map(c => c.sueldo));
+
+        content.innerHTML = `
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 text-center">
+                    <div class="font-heading font-800 text-3xl text-peru-red">${totalConvos}</div>
+                    <div class="text-gray-500 text-sm mt-1">Total convocatorias</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 text-center">
+                    <div class="font-heading font-800 text-3xl text-gray-900">S/ ${sueldoProm.toLocaleString()}</div>
+                    <div class="text-gray-500 text-sm mt-1">Sueldo promedio</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 text-center">
+                    <div class="font-heading font-800 text-3xl text-gray-900">S/ ${maxSueldo.toLocaleString()}</div>
+                    <div class="text-gray-500 text-sm mt-1">Sueldo más alto</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 text-center">
+                    <div class="font-heading font-800 text-3xl text-gray-900">${Object.keys(porUbicacion).length}</div>
+                    <div class="text-gray-500 text-sm mt-1">Regiones</div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <h4 class="font-heading font-600 text-sm text-gray-700 mb-4">Por tipo de contrato</h4>
+                    ${Object.entries(porContrato).map(([k,v]) => `
+                        <div class="mb-3"><div class="flex justify-between text-sm mb-1"><span class="text-gray-600">${k}</span><span class="font-semibold">${v}</span></div>
+                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-peru-red rounded-full progress-bar" style="width:${(v/totalConvos*100)}%"></div></div></div>
+                    `).join('')}
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <h4 class="font-heading font-600 text-sm text-gray-700 mb-4">Por ubicación</h4>
+                    ${Object.entries(porUbicacion).map(([k,v]) => `
+                        <div class="mb-3"><div class="flex justify-between text-sm mb-1"><span class="text-gray-600">${k}</span><span class="font-semibold">${v}</span></div>
+                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full progress-bar" style="width:${(v/totalConvos*100)}%"></div></div></div>
+                    `).join('')}
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <h4 class="font-heading font-600 text-sm text-gray-700 mb-4">Por nivel educativo</h4>
+                    ${Object.entries(porNivel).map(([k,v]) => `
+                        <div class="mb-3"><div class="flex justify-between text-sm mb-1"><span class="text-gray-600">${k}</span><span class="font-semibold">${v}</span></div>
+                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 rounded-full progress-bar" style="width:${(v/totalConvos*100)}%"></div></div></div>
+                    `).join('')}
+                </div>
+            </div>`;
+    }
+}
+
+function submitConvocatoria(e) {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const newId = Math.max(...state.convocatorias.map(c => c.id)) + 1;
+    const today = new Date().toISOString().split('T')[0];
+    const newC = {
+        id: newId,
+        titulo: fd.get('titulo'),
+        entidad: fd.get('entidad'),
+        ubicacion: fd.get('ubicacion'),
+        sueldo: parseInt(fd.get('sueldo')),
+        fechaPub: today,
+        fechaLimite: fd.get('fechaLimite'),
+        tipoContrato: fd.get('tipoContrato'),
+        nivel: fd.get('nivel'),
+        descripcion: fd.get('descripcion'),
+        requisitos: fd.get('requisitos').split('\n').filter(x => x.trim()),
+        funciones: fd.get('funciones').split('\n').filter(x => x.trim()),
+        documentos: fd.get('documentos').split('\n').filter(x => x.trim()),
+        linkOficial: '#',
+        modalidad: fd.get('modalidad') || 'Presencial'
+    };
+    state.convocatorias.unshift(newC);
+    applyFilters();
+    showToast('Convocatoria publicada exitosamente', 'success');
+    switchAdminTab('lista');
+}
+
+function deleteConvocatoria(id) {
+    state.convocatorias = state.convocatorias.filter(c => c.id !== id);
+    state.saved = state.saved.filter(s => s !== id);
+    state.postulations = state.postulations.filter(p => p !== id);
+    localStorage.setItem('cp_saved', JSON.stringify(state.saved));
+    localStorage.setItem('cp_postulations', JSON.stringify(state.postulations));
+    applyFilters();
+    switchAdminTab('lista');
+    showToast('Convocatoria eliminada', 'info');
+}
+
+// ==========================
+// ASISTENTE IA
+// ==========================
+const aiResponses = {
+    saludo: "Hola, soy tu asistente de búsqueda de empleo público. Puedo ayudarte a encontrar convocatorias según tu perfil, darte consejos para postular o analizar requisitos. Dime, ¿qué buscas?",
+    recomendaciones: [
+        "Basándome en las convocatorias disponibles, te recomiendo revisar las de tipo CAS si buscas ingreso rápido al sector público. Las convocatorias D.L. 728 ofrecen mayor estabilidad, y las D.L. 276 son para puestos de carrera administrativa.",
+        "Para mejorar tus posibilidades: 1) Personaliza tu CV para cada convocatoria, 2) Destaca experiencia relevante al sector, 3) Verifica que cumples TODOS los requisitos antes de postular, 4) Prepara tu carpeta documentaria con anticipación.",
+        "Consejo clave: En las convocatorias CAS, la evaluación suele ser curricular. En D.L. 728 y 276, hay examen de conocimientos. Prepara tu estrategia según el tipo de convocatoria."
+    ],
+    perfil: [
+        "Para analizarte mejor, cuéntame: ¿Cuál es tu profesión? ¿Qué tipo de contrato buscas (CAS, 728, 276)? ¿Prefieres Lima o provincias? Con esa información puedo sugerirte convocatorias específicas.",
+        "Si eres profesional técnico, busca convocatorias de nivel Técnico que suelen tener menor competencia. Si tienes maestría, las convocatorias de nivel Maestría ofrecen mejores sueldos.",
+    ],
+    documentos: "Los documentos más comunes que te pedirán son: CV actualizado, copia de título profesional, colegiatura y habilitación (si aplica), certificados de experiencia laboral, declaración jurada de no tener antecedentes penales, y recibo de servicios para verificar domicilio.",
+    contrato: {
+        cas: "El CAS (Contrato Administrativo de Servicios) es el tipo más común. Características: No es carrera administrativa, contrato sujeto a presupuesto, renovable, no genera derechos laborales de la carrera pública, pero sí beneficios como essalud y CTS.",
+        "728": "El D.L. 728 es para trabajadores del sector público bajo régimen laboral privado. Ofrece mayor estabilidad que el CAS, incluye beneficios como gratificaciones, CTS, vacaciones y compensación por tiempo de servicios.",
+        "276": "El D.L. 276 es el régimen de carrera administrativa. Es el más estable, con ascensos por méritos. Requiere concurso público. Incluye todos los beneficios laborales y es difícil de despedir al trabajador."
+    },
+    default: [
+        "Puedo ayudarte con: recomendaciones de convocatorias, análisis de tu perfil vs requisitos, consejos para postular, información sobre tipos de contrato (CAS, 728, 276), y requisitos documentarios. ¿Sobre qué te gustaría saber?",
+        "No tengo información específica sobre eso, pero puedo orientarte en tu búsqueda de empleo público. Prueba preguntarme sobre: tipos de contrato, cómo mejorar tu postulación, o qué convocatorias se ajustan a tu perfil.",
+    ]
+};
+
+function openAI() {
+    const panel = document.getElementById('ai-panel');
+    const fab = document.getElementById('ai-fab');
+    panel.classList.remove('hidden');
+    fab.classList.add('hidden');
+    if (state.aiMessages.length === 0) {
+        addAIMessage('bot', aiResponses.saludo);
+    }
+    document.getElementById('ai-input').focus();
+}
+function closeAI() {
+    document.getElementById('ai-panel').classList.add('hidden');
+    document.getElementById('ai-fab').classList.remove('hidden');
+}
+function addAIMessage(type, text) {
+    state.aiMessages.push({ type, text });
+    const container = document.getElementById('ai-messages');
+    const div = document.createElement('div');
+    div.className = `chat-bubble flex ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+    div.innerHTML = `<div class="max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${type === 'user' ? 'bg-peru-red text-white rounded-br-md' : 'bg-gray-100 text-gray-800 rounded-bl-md'}">${text}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+function sendAI() {
+    const input = document.getElementById('ai-input');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addAIMessage('user', text);
+
+    // Simular tiempo de respuesta
+    setTimeout(() => {
+        const lower = text.toLowerCase();
+        let response;
+
+        if (lower.match(/hola|buenos|buenas|hey/)) {
+            response = aiResponses.saludo;
+        } else if (lower.match(/recomiend|suger|busco|quiero|necesito empleo|trabajo/)) {
+            // Intentar buscar convocatorias relevantes
+            const keywords = lower.split(/\s+/).filter(w => w.length > 3);
+            const relevant = state.convocatorias.filter(c => {
+                const combined = (c.titulo + ' ' + c.descripcion + ' ' + c.entidad).toLowerCase();
+                return keywords.some(k => combined.includes(k));
+            }).slice(0, 3);
+            if (relevant.length > 0) {
+                response = `Encontré estas convocatorias que podrían interesarte:\n\n` +
+                    relevant.map(c => `<strong>${c.titulo}</strong> — ${c.entidad} · S/ ${c.sueldo.toLocaleString()} · ${c.tipoContrato}`).join('\n\n') +
+                    `\n\n¿Quieres que te dé más detalles de alguna?`;
+            } else {
+                response = aiResponses.recomendaciones[Math.floor(Math.random() * aiResponses.recomendaciones.length)];
+            }
+        } else if (lower.match(/perfil|profesión|soy|profesion|ingenier|abogad|enfermer|contador|psicolog|arquitect|econom|comunicad|medic|técnico|tecnico/)) {
+            const profileResponses = aiResponses.perfil;
+            // Buscar convocatorias por profesión
+            const professionKeywords = {
+                'ingenier': ['Ingenier', 'Sistemas', 'Civil', 'TI'],
+                'abogad': ['Abogad', 'Contratacion', 'Legal'],
+                'enfermer': ['Enfermer'],
+                'contador': ['Contador'],
+                'psicolog': ['Psicol'],
+                'arquitect': ['Arquitect'],
+                'econom': ['Econom'],
+                'comunicad': ['Comunicac'],
+                'medic': ['Médic', 'Medic'],
+                'tecnico': ['Técnico', 'Soporte', 'Digitad']
+            };
+            let matchedConvos = [];
+            for (const [key, searchTerms] of Object.entries(professionKeywords)) {
+                if (lower.includes(key)) {
+                    matchedConvos = state.convocatorias.filter(c =>
+                        searchTerms.some(t => (c.titulo + c.descripcion).toLowerCase().includes(t.toLowerCase()))
+                    ).slice(0, 3);
+                    break;
+                }
+            }
+            if (matchedConvos.length > 0) {
+                response = `Según tu perfil, te sugiero estas convocatorias:\n\n` +
+                    matchedConvos.map(c => `<strong>${c.titulo}</strong><br>${c.entidad} · S/ ${c.sueldo.toLocaleString()} · ${c.tipoContrato}<br>Requiere: ${c.nivel}`).join('\n\n');
+            } else {
+                response = profileResponses[Math.floor(Math.random() * profileResponses.length)];
+            }
+        } else if (lower.match(/documento|papell|certific|requisito/)) {
+            response = aiResponses.documentos;
+        } else if (lower.match(/cas|728|276|contrato|regimen|régimen/)) {
+            if (lower.includes('cas')) response = aiResponses.contrato.cas;
+            else if (lower.includes('728')) response = aiResponses.contrato['728'];
+            else if (lower.includes('276')) response = aiResponses.contrato['276'];
+            else response = `<strong>Tipos de contrato en el Estado:</strong>\n\n1) <strong>CAS</strong>: Contrato administrativo de servicios. El más común y accesible.\n\n2) <strong>D.L. 728</strong>: Régimen laboral privado. Mayor estabilidad.\n\n3) <strong>D.L. 276</strong>: Carrera administrativa. Máxima estabilidad.\n\n¿Sobre cuál quieres más detalles?`;
+        } else if (lower.match(/consejo|tip|mejor|postul|cv|curriculum/)) {
+            response = aiResponses.recomendaciones[Math.floor(Math.random() * aiResponses.recomendaciones.length)];
+        } else {
+            response = aiResponses.default[Math.floor(Math.random() * aiResponses.default.length)];
+        }
+        addAIMessage('bot', response);
+    }, 600 + Math.random() * 800);
+}
+
+// ==========================
+// UTILIDADES
+// ==========================
+function formatDate(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    const colors = { success: 'bg-green-600', error: 'bg-red-600', info: 'bg-gray-800' };
+    const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+    toast.className = `toast-enter ${colors[type]} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm`;
+    toast.innerHTML = `<i class="fas ${icons[type]}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.classList.remove('toast-enter'); toast.classList.add('toast-exit'); }, 3000);
+    setTimeout(() => toast.remove(), 3400);
+}
+
+function toggleMobile() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+}
+
+// ==========================
+// ANIMACIONES DE SCROLL
+// ==========================
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// Navbar scroll behavior
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    const logoText = document.getElementById('nav-logo-text');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        if (scrollY > 80) {
+            navbar.style.background = 'rgba(15,23,42,0.95)';
+            navbar.style.backdropFilter = 'blur(12px)';
+            navbar.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+        } else {
+            navbar.style.background = 'transparent';
+            navbar.style.backdropFilter = 'none';
+            navbar.style.boxShadow = 'none';
+        }
+        lastScroll = scrollY;
+    });
+}
+
+// Contadores animados del hero
+function animateCounters() {
+    const counters = [
+        { el: 'stat-conv', target: state.convocatorias.length },
+        { el: 'stat-ent', target: [...new Set(state.convocatorias.map(c => c.entidad))].length },
+        { el: 'stat-ubi', target: [...new Set(state.convocatorias.map(c => c.ubicacion))].length }
+    ];
+    counters.forEach(({ el, target }) => {
+        const element = document.getElementById(el);
+        let current = 0;
+        const increment = Math.ceil(target / 40);
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) { current = target; clearInterval(timer); }
+            element.textContent = current;
+        }, 30);
+    });
+}
+
+// ==========================
+// INICIALIZACIÓN
+// ==========================
+function init() {
+    state.filtered = [...state.convocatorias];
+    state.filtered.sort((a,b) => new Date(b.fechaPub) - new Date(a.fechaPub));
+    renderConvocatorias();
+    initScrollAnimations();
+    initNavbar();
+    // Animar contadores cuando el hero sea visible
+    const heroObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            animateCounters();
+            heroObserver.disconnect();
+        }
+    });
+    heroObserver.observe(document.querySelector('.hero-bg'));
+    // Activar reveals del hero
+    document.querySelectorAll('.hero-bg .reveal').forEach(el => el.classList.add('visible'));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+// Cerrar modales con Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeDetail(); closeUserPanel(); closeAdmin(); closeAI();
+    }
+});
+</script>
+</body>
+</html>

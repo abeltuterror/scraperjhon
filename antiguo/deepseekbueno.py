@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
 import time
+from collections import defaultdict
 
 # URL base
 URL = "https://app.servir.gob.pe/DifusionOfertasExterno/faces/consultas/ofertas_laborales.xhtml"
@@ -24,6 +25,74 @@ def retroceder(page):
         return False
 
 # -------------------------
+# Función para extraer TODOS los pares clave-valor de la vista detallada
+# -------------------------
+def extraer_todos_los_campos(page):
+    """
+    Extrae dinámicamente cualquier pareja (clave: valor) que aparezca
+    en el contenedor de requerimientos de la página de detalle.
+    Retorna un diccionario con todos los campos encontrados.
+    """
+    campos = {}
+    
+    # Esperar a que cargue el contenido de los detalles (opcional)
+    try:
+        page.wait_for_selector("span.sub-titulo-2, span.sub-titulo", timeout=5000)
+    except:
+        return campos
+    
+    # Obtener el HTML del contenedor principal de requerimientos (XPath original)
+    xpath_contenedor = "/html/body/div[2]/div[2]/div[2]/form/div/div/div/div[1]/div[2]/div/div[2]/div"
+    try:
+        contenedor = page.locator(f"xpath={xpath_contenedor}")
+        if contenedor.count():
+            html_contenedor = contenedor.first.inner_html()
+            soup = BeautifulSoup(html_contenedor, "lxml")
+            
+            # 1. Buscar todos los <li> con <span class="sub-titulo-2"> y <span class="detalle-sp">
+            for li in soup.find_all("li"):
+                sub = li.find("span", class_="sub-titulo-2")
+                det = li.find("span", class_="detalle-sp")
+                if sub and det:
+                    clave = sub.get_text(strip=True).rstrip(":")
+                    valor = det.get_text(strip=True)
+                    campos[clave] = valor
+            
+            # 2. Buscar filas sueltas con <span class="sub-titulo"> y <span class="detalle-sp">
+            #    (ejemplo: DETALLE, CANTIDAD DE VACANTES, etc., aunque estos ya están en la tarjeta,
+            #     pero pueden aparecer también aquí)
+            for div_row in soup.find_all("div", class_="row"):
+                sub = div_row.find("span", class_="sub-titulo")
+                det = div_row.find("span", class_="detalle-sp")
+                if sub and det:
+                    clave = sub.get_text(strip=True).rstrip(":")
+                    # Si el detalle contiene un <a>, extraer texto y URL
+                    enlace = det.find("a")
+                    if enlace:
+                        valor = {
+                            "texto": enlace.get_text(strip=True),
+                            "url": enlace.get("href")
+                        }
+                    else:
+                        valor = det.get_text(strip=True)
+                    campos[clave] = valor
+            
+            # 3. Extraer la sección adicional del div[3]/div (la que te faltaba)
+            #    Buscamos dentro del contenedor el tercer div hijo y su subdiv
+            div_extra = soup.find_all("div", recursive=False)
+            if len(div_extra) >= 3:
+                tercer_div = div_extra[2]  # índice 2 = tercer div hijo
+                subdiv_extra = tercer_div.find("div")
+                if subdiv_extra:
+                    contenido_extra = subdiv_extra.get_text(strip=True)
+                    if contenido_extra:
+                        campos["SECCION_ADICIONAL"] = contenido_extra
+    except Exception as e:
+        print(f"      ⚠️ Error extrayendo campos dinámicos: {e}")
+    
+    return campos
+
+# -------------------------
 # MAIN: Usar Playwright
 # -------------------------
 todas_vacantes = []
@@ -41,7 +110,7 @@ with sync_playwright() as p:
     
     pagina = 0
     sin_mas_vacantes = False
-    max_paginas = 999
+    max_paginas = 3  # Ajusta según necesites
     
     while not sin_mas_vacantes and pagina < max_paginas:
         print(f"\n📄 Página {pagina}...")
@@ -62,24 +131,22 @@ with sync_playwright() as p:
             
             print(f"   ✓ Se encontraron {len(vacantes_divs)} vacantes en página {pagina}")
             
-            # Obtener todos los botones "¡Ver más!" - iteraremos por índice
+            # Obtener todos los botones "¡Ver más!"
             botones_ver_mas = page.locator("span.ui-button-text.ui-c:has-text('¡Ver más!')").all()
             print(f"   ✓ Se encontraron {len(botones_ver_mas)} botones '¡Ver más!'")
             
             vacantes_nuevas_en_pagina = 0
             
-            # Procesar cada botón por índice para evitar duplicados
+            # Procesar cada vacante
             for idx in range(len(vacantes_divs)):
                 print(f"   🔹 Procesando vacante {idx + 1}/{len(vacantes_divs)}...")
                 
-                # Extraer información básica del cuadro
+                # --- Extraer información básica del cuadro (sin clic) ---
                 vacante_div = vacantes_divs[idx]
                 
-                # Extraer título
                 titulo_label = vacante_div.find("div", {"class": "titulo-vacante"})
                 titulo = titulo_label.find("label").text.strip() if titulo_label else "N/A"
                 
-                # Extraer entidad
                 nombre_entidad_div = vacante_div.find("div", {"class": "nombre-entidad"})
                 if nombre_entidad_div:
                     span = nombre_entidad_div.find("span", {"class": "detalle-sp"})
@@ -87,14 +154,11 @@ with sync_playwright() as p:
                 else:
                     entidad = "N/A"
                 
-                # Extraer otros datos
                 datos = {}
                 filas_datos = vacante_div.find_all("div", {"class": "row box-mb"})
-                
                 for fila in filas_datos:
                     sub_titulo = fila.find("span", {"class": "sub-titulo"})
                     detalle = fila.find("span", {"class": "detalle-sp"})
-                    
                     if sub_titulo and detalle:
                         clave = sub_titulo.text.strip().rstrip(":")
                         clave = " ".join(clave.split())
@@ -102,22 +166,19 @@ with sync_playwright() as p:
                         valor = " ".join(valor.split())
                         datos[clave] = valor
                 
-                convocatoria = datos.get("Número de Convocatoria", "N/A")
-                
                 vacante_info = {
                     "Título": titulo,
                     "Entidad": entidad,
                     "Ubicación": datos.get("Ubicación", "N/A"),
-                    "Convocatoria": convocatoria,
+                    "Convocatoria": datos.get("Número de Convocatoria", "N/A"),
                     "Vacantes": datos.get("Cantidad de Vacantes", "N/A"),
                     "Remuneración": datos.get("Remuneración", "N/A"),
                     "Fecha Inicio": datos.get("Fecha Inicio de Publicación", "N/A"),
                     "Fecha Fin": datos.get("Fecha Fin de Publicación", "N/A"),
                 }
                 
-                # 🎯 HACER CLICK EN EL BOTÓN "¡Ver más!"
+                # --- Hacer clic en "¡Ver más!" y extraer todos los campos dinámicos ---
                 try:
-                    # Actualizar lista de botones (pueden cambiar después de cada interacción)
                     botones_actualizados = page.locator("span.ui-button-text.ui-c:has-text('¡Ver más!')").all()
                     
                     if idx < len(botones_actualizados):
@@ -127,101 +188,53 @@ with sync_playwright() as p:
                         page.wait_for_load_state("networkidle", timeout=5000)
                         time.sleep(1)
                         
-                        # Extraer información adicional con los XPaths indicados
-                        xpath_requerimientos = "/html/body/div[2]/div[2]/div[2]/form/div/div/div/div[1]/div[2]/div/div[2]/div"
+                        # Extraer TODOS los campos de la vista detallada (dinámicos)
+                        campos_detalle = extraer_todos_los_campos(page)
                         
-                        try:
-                            elem_requerimientos = page.locator(f"xpath={xpath_requerimientos}")
-                            if elem_requerimientos.is_visible():
-                                content_reqs = page.content()
-                                soup_reqs = BeautifulSoup(content_reqs, "lxml")
-                                
-                                experiencia = "N/A"
-                                formacion = "N/A"
-                                especializacion = "N/A"
-                                conocimiento = "N/A"
-                                competencias = "N/A"
-                                
-                                # Iterar sobre los elementos
-                                for li in soup_reqs.find_all('li'):
-                                    sub_titulo_2 = li.find('span', {'class': 'sub-titulo-2'})
-                                    detalle_sp = li.find('span', {'class': 'detalle-sp'})
-                                    
-                                    if sub_titulo_2 and detalle_sp:
-                                        label = sub_titulo_2.text.strip().rstrip(":")
-                                        valor = detalle_sp.text.strip()
-                                        
-                                        if "EXPERIENCIA" in label.upper():
-                                            experiencia = valor
-                                        elif "FORMACIÓN" in label.upper() or "ACADEMICA" in label.upper():
-                                            formacion = valor
-                                        elif "ESPECIALIZACIÓN" in label.upper():
-                                            especializacion = valor
-                                        elif "CONOCIMIENTO" in label.upper():
-                                            conocimiento = valor
-                                        elif "COMPETENCIAS" in label.upper():
-                                            competencias = valor
-                                
-                                vacante_info['Experiencia'] = experiencia
-                                vacante_info['Formacion_Academica'] = formacion
-                                vacante_info['Especializacion'] = especializacion
-                                vacante_info['Conocimiento'] = conocimiento
-                                vacante_info['Competencias'] = competencias
-                                
-                                print(f"      📝 Requerimientos extraídos")
-                        except Exception as e:
-                            print(f"      ⚠️ Error extrayendo requerimientos: {str(e)}")
-                            vacante_info['Experiencia'] = "N/A"
-                            vacante_info['Formacion_Academica'] = "N/A"
-                            vacante_info['Especializacion'] = "N/A"
-                            vacante_info['Conocimiento'] = "N/A"
-                            vacante_info['Competencias'] = "N/A"
+                        # Agregar esos campos al diccionario de la vacante
+                        # (evitamos sobrescribir los campos básicos ya obtenidos)
+                        for clave, valor in campos_detalle.items():
+                            if clave not in vacante_info:  # no sobrescribir Título, Entidad, etc.
+                                vacante_info[clave] = valor
                         
-                        # Extraer Título_Aviso e Institución_Aviso
+                        # También extraemos Título_Aviso e Institución_Aviso (XPaths originales)
                         xpath_titulo = "/html/body/div[2]/div[2]/div[2]/form/div/div/div/div[1]/div[1]/div/div[2]/div/span[1]"
                         xpath_institucion = "/html/body/div[2]/div[2]/div[2]/form/div/div/div/div[1]/div[1]/div/div[2]/div/span[2]"
                         
                         try:
                             elem_titulo = page.locator(f"xpath={xpath_titulo}")
                             if elem_titulo.is_visible():
-                                titulo_aviso = elem_titulo.text_content().strip()
-                                vacante_info['Titulo_Aviso'] = titulo_aviso
-                                print(f"      📝 Título_Aviso: {titulo_aviso[:50]}...")
+                                vacante_info['Titulo_Aviso'] = elem_titulo.text_content().strip()
+                            else:
+                                vacante_info['Titulo_Aviso'] = "N/A"
                         except:
                             vacante_info['Titulo_Aviso'] = "N/A"
                         
                         try:
                             elem_institucion = page.locator(f"xpath={xpath_institucion}")
                             if elem_institucion.is_visible():
-                                institucion_aviso = elem_institucion.text_content().strip()
-                                vacante_info['Institucion_Aviso'] = institucion_aviso
-                                print(f"      📝 Institucion_Aviso: {institucion_aviso[:50]}...")
+                                vacante_info['Institucion_Aviso'] = elem_institucion.text_content().strip()
+                            else:
+                                vacante_info['Institucion_Aviso'] = "N/A"
                         except:
                             vacante_info['Institucion_Aviso'] = "N/A"
                         
-                        # 🔙 RETROCEDER
+                        print(f"      📝 Campos extraídos: {list(campos_detalle.keys())}")
+                        
+                        # Retroceder
                         print(f"      ↩️  Retrocediendo...")
                         retroceder(page)
                         print(f"      ✓ Retrocedido")
                     else:
                         print(f"      ⚠️ No se encontró botón para este índice")
+                        # Rellenar campos por defecto
                         vacante_info['Titulo_Aviso'] = "N/A"
                         vacante_info['Institucion_Aviso'] = "N/A"
-                        vacante_info['Experiencia'] = "N/A"
-                        vacante_info['Formacion_Academica'] = "N/A"
-                        vacante_info['Especializacion'] = "N/A"
-                        vacante_info['Conocimiento'] = "N/A"
-                        vacante_info['Competencias'] = "N/A"
                 
                 except Exception as e:
                     print(f"      ⚠️ Error en click/extracción: {str(e)}")
                     vacante_info['Titulo_Aviso'] = "N/A"
                     vacante_info['Institucion_Aviso'] = "N/A"
-                    vacante_info['Experiencia'] = "N/A"
-                    vacante_info['Formacion_Academica'] = "N/A"
-                    vacante_info['Especializacion'] = "N/A"
-                    vacante_info['Conocimiento'] = "N/A"
-                    vacante_info['Competencias'] = "N/A"
                     try:
                         retroceder(page)
                     except:
@@ -230,10 +243,10 @@ with sync_playwright() as p:
                 todas_vacantes.append(vacante_info)
                 vacantes_nuevas_en_pagina += 1
             
+            # Navegar a siguiente página si hay más
             if vacantes_nuevas_en_pagina == 0:
                 sin_mas_vacantes = True
             else:
-                # Buscar botón "Siguiente"
                 try:
                     print(f"\n   ➡️  Buscando botón 'Siguiente'...")
                     next_button = page.locator("button:has-text('Siguiente')")
@@ -262,35 +275,29 @@ print(f"\n{'='*60}")
 print(f"✓ TOTAL DE VACANTES ENCONTRADAS: {len(todas_vacantes)}")
 print(f"{'='*60}\n")
 
-# Mostrar primeras vacantes
+# --- Guardar resultados en CSV con columnas dinámicas ---
 if todas_vacantes:
-    print("📋 Primeras 5 vacantes encontradas:\n")
-    for i, vacante in enumerate(todas_vacantes[:5], 1):
-        print(f"{i}. {vacante['Título']}")
-        print(f"   Entidad: {vacante['Entidad']}")
-        print(f"   Titulo_Aviso: {vacante.get('Titulo_Aviso', 'N/A')}")
-        print(f"   Institucion_Aviso: {vacante.get('Institucion_Aviso', 'N/A')}")
-        print(f"   Experiencia: {vacante.get('Experiencia', 'N/A')[:60]}...")
-        print(f"   Formación: {vacante.get('Formacion_Academica', 'N/A')[:60]}...")
-        print(f"   Competencias: {vacante.get('Competencias', 'N/A')[:60]}...")
-        print()
-
-# -------------------------
-# Guardar en CSV
-# -------------------------
-if todas_vacantes:
+    # Recolectar todas las claves únicas que aparecen en todas las vacantes
+    todas_las_claves = set()
+    for vacante in todas_vacantes:
+        todas_las_claves.update(vacante.keys())
+    
+    # Definir un orden predecible: poner primero los campos básicos y luego el resto
+    campos_basicos = ["Título", "Entidad", "Ubicación", "Convocatoria", "Vacantes", 
+                      "Remuneración", "Fecha Inicio", "Fecha Fin", "Titulo_Aviso", "Institucion_Aviso"]
+    otros_campos = sorted([c for c in todas_las_claves if c not in campos_basicos])
+    fieldnames = campos_basicos + otros_campos
+    
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"vacantes_{timestamp}.csv"
     
     try:
         with open(filename, "w", newline="", encoding="utf-8") as csvfile:
-            fieldnames = ["Título", "Entidad", "Ubicación", "Convocatoria", "Vacantes", "Remuneración", "Fecha Inicio", "Fecha Fin", "Titulo_Aviso", "Institucion_Aviso", "Experiencia", "Formacion_Academica", "Especializacion", "Conocimiento", "Competencias"]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
             writer.writeheader()
             writer.writerows(todas_vacantes)
-        
         print(f"\n✓ Datos guardados en: {filename}")
+        print(f"✓ Columnas del CSV: {fieldnames}")
     except Exception as e:
         print(f"❌ Error al guardar CSV: {e}")
 else:
