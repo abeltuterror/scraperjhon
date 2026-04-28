@@ -42,8 +42,8 @@ def normalizar_y_guardar():
         cur = conn.cursor()
 
         # Extraer los datos
-        print("Extrayendo datos de la tabla 'convocatorias6'...")
-        cur.execute("SELECT id, datos_completos FROM convocatorias6")
+        print("Extrayendo datos de la tabla 'convocatorias7'...")
+        cur.execute("SELECT id, datos_completos FROM convocatorias7")
         rows = cur.fetchall()
 
         lista_limpia = []
