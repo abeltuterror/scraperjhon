@@ -141,3 +141,6 @@ python pro.py
 python buenobueno.py
 
 ```
+
+
+se scrapea con 1.py  y se normaliza con normalizaparaweb.py
