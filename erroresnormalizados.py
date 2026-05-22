@@ -239,7 +239,7 @@ def normalizar_y_guardar():
             SELECT id, detalles_json
             FROM convocatorias
             WHERE estado = 'exitoso'
-            AND timestamp_scraping >= NOW() - INTERVAL '3 hours'
+            AND timestamp_scraping >= NOW() - INTERVAL '24 hours'
             ORDER BY timestamp_scraping DESC
         """)
         rows = cur.fetchall()
