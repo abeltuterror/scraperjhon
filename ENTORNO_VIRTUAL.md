@@ -143,6 +143,6 @@ python buenobueno.py
 ```
 
 
-se scrapea con 1.py  y se normaliza con normalizaparaweb.py
+se scrapea con buenoscraperfolio.py  y se normaliza con normalizaparaweb.py
 
 

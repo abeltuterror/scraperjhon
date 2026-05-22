@@ -169,6 +169,53 @@ def generar_documentos(niveles):
         base.extend(["Título o certificado técnico"])
     return base
 
+def calcular_indexable(convocatoria):
+    """
+    Determina si una convocatoria es indexable según los criterios:
+    1. descripcion existe, no está vacía y tiene más de 50 caracteres
+    2. Después de filtrar requisitos genéricos, quedan al menos 2 elementos
+    3. sueldo es un número mayor a 0
+    
+    Retorna True si cumple TODOS los criterios, False en caso contrario.
+    """
+    # Frases completas que indican requisitos genéricos/no indexables
+    FRASES_GENERICAS = [
+        "según bases que serán publicadas en el portal institucional"
+    ]
+    
+    # Criterio 1: descripcion
+    descripcion = convocatoria.get("descripcion", "")
+    if not descripcion or len(descripcion) <= 50:
+        return False
+    
+    # Criterio 2: requisitos válidos (después de filtrar genéricos)
+    requisitos = convocatoria.get("requisitos", [])
+    if not isinstance(requisitos, list):
+        return False
+    
+    # Filtrar requisitos que contengan la frase genérica COMPLETA
+    requisitos_validos = []
+    for req in requisitos:
+        req_lower = req.lower()
+        es_generico = False
+        for frase in FRASES_GENERICAS:
+            if frase in req_lower:
+                es_generico = True
+                break
+        if not es_generico:
+            requisitos_validos.append(req)
+    
+    # Necesitamos al menos 2 requisitos válidos después de filtrar
+    if len(requisitos_validos) < 2:
+        return False
+    
+    # Criterio 3: sueldo mayor a 0
+    sueldo = convocatoria.get("sueldo", 0)
+    if not isinstance(sueldo, (int, float)) or sueldo <= 0:
+        return False
+    
+    return True
+
 # ─── Proceso principal con filtro por fecha actual ─────────────────────────────
 
 def normalizar_y_guardar():
@@ -192,7 +239,9 @@ def normalizar_y_guardar():
         cur.execute("""
             SELECT id, detalles_json
             FROM convocatorias
-            WHERE estado = 'exitoso' AND timestamp_scraping::date = CURRENT_DATE
+            WHERE estado = 'exitoso'
+            AND timestamp_scraping >= NOW() - INTERVAL '3 hours'
+            ORDER BY timestamp_scraping DESC
         """)
         rows = cur.fetchall()
         print(f"Se encontraron {len(rows)} registros en total.")
@@ -274,6 +323,10 @@ def normalizar_y_guardar():
                 "linkOficial": link_oficial,
                 "modalidad": "Presencial"
             }
+            
+            # Calcular si es indexable según los criterios definidos
+            item["indexable"] = calcular_indexable(item)
+            
             lista_limpia.append(item)
 
         with open(ruta_salida, 'w', encoding='utf-8') as f:
