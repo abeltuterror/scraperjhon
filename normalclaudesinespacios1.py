@@ -2,7 +2,6 @@ import psycopg2
 import json
 import os
 import re
-import unicodedata
 from datetime import datetime
 
 # ─── Funciones de transformación ───────────────────────────────────────────────
@@ -117,31 +116,38 @@ def dividir_texto_en_lista(texto):
     partes = re.split(r'\.\s+|\-\s+', texto_limpio)
     lista = []
     for p in partes:
+        # 1. limpiamos espacios alrededor
         item = p.strip()
+        # 2. si comienza con ¿ lo sacamos y volvemos a limpiar
         if item.startswith('¿'):
             item = item[1:].strip()
+        # 3. capitalizamos y quitamos punto final, igual que antes
         item = capitalizar(item.rstrip('.'))
         if item and len(item) > 5 and not item.endswith(':'):
             lista.append(item)
     return lista
 
-def quitar_acentos(texto):
-    return unicodedata.normalize('NFD', texto).encode('ascii', 'ignore').decode('ascii')
-
 def inferir_nivel(formacion, especializacion):
-    f = quitar_acentos(str(formacion).upper())
-    e = quitar_acentos(str(especializacion).upper())
+    """
+    Analiza los textos de formación y especialización para devolver una **lista**
+    con todos los niveles detectados.
+    """
+    f = str(formacion).upper()
+    e = str(especializacion).upper()
     niveles = []
 
+    # Buscar cada nivel de forma independiente
     if "MAESTR" in f or "MAESTR" in e:
         niveles.append("Maestría")
     if "DOCTO" in f or "DOCTO" in e:
         niveles.append("Doctorado")
     if "TECNICO" in f or "TECNOLOGO" in f:
         niveles.append("Técnico")
-    if any(kw in f for kw in ["UNIVERSIT", "BACHILLER", "INGENIER", "LICENCI", "MEDICO", "CIRUJANO", "TITULO"]):
+    # Palabras que indican estudios universitarios
+    if any(kw in f for kw in ["UNIVERSIT", "BACHILLER", "INGENIER", "LICENCI", "MEDICO", "CIRUJANO"]):
         niveles.append("Universitario")
 
+    # Eliminar duplicados manteniendo el orden
     niveles = list(dict.fromkeys(niveles))
 
     if not niveles:
@@ -149,6 +155,10 @@ def inferir_nivel(formacion, especializacion):
     return niveles
 
 def generar_documentos(niveles):
+    """
+    Recibe una lista de niveles (p.ej. ["Universitario", "Maestría"])
+    y devuelve la lista de documentos requeridos.
+    """
     base = ["Curriculum vitae", "Certificados de experiencia"]
     tiene_universitario = any(n in ["Universitario", "Maestría", "Doctorado"] for n in niveles)
     tiene_tecnico = "Técnico" in niveles
@@ -160,18 +170,30 @@ def generar_documentos(niveles):
     return base
 
 def calcular_indexable(convocatoria):
+    """
+    Determina si una convocatoria es indexable según los criterios:
+    1. descripcion existe, no está vacía y tiene más de 50 caracteres
+    2. Después de filtrar requisitos genéricos, quedan al menos 2 elementos
+    3. sueldo es un número mayor a 0
+    
+    Retorna True si cumple TODOS los criterios, False en caso contrario.
+    """
+    # Frases completas que indican requisitos genéricos/no indexables
     FRASES_GENERICAS = [
         "según bases que serán publicadas en el portal institucional"
     ]
-
+    
+    # Criterio 1: descripcion
     descripcion = convocatoria.get("descripcion", "")
     if not descripcion or len(descripcion) <= 50:
         return False
-
+    
+    # Criterio 2: requisitos válidos (después de filtrar genéricos)
     requisitos = convocatoria.get("requisitos", [])
     if not isinstance(requisitos, list):
         return False
-
+    
+    # Filtrar requisitos que contengan la frase genérica COMPLETA
     requisitos_validos = []
     for req in requisitos:
         req_lower = req.lower()
@@ -182,36 +204,19 @@ def calcular_indexable(convocatoria):
                 break
         if not es_generico:
             requisitos_validos.append(req)
-
+    
+    # Necesitamos al menos 2 requisitos válidos después de filtrar
     if len(requisitos_validos) < 2:
         return False
-
+    
+    # Criterio 3: sueldo mayor a 0
     sueldo = convocatoria.get("sueldo", 0)
     if not isinstance(sueldo, (int, float)) or sueldo <= 0:
         return False
-
+    
     return True
 
-# ─── Clasificador de errores de sueldo ─────────────────────────────────────────
-
-def clasificar_error_sueldo(sueldo):
-    if sueldo <= 0:
-        return 1
-    if sueldo < 400:
-        return 1
-    if sueldo > 20000:
-        return 2
-    return 0
-
-def obtener_descripcion_error(codigo):
-    descripciones = {
-        0: "Sin errores",
-        1: "Error absoluto bajo: sueldo < S/ 400",
-        2: "Error absoluto alto: sueldo > S/ 20,000"
-    }
-    return descripciones.get(codigo, "Código desconocido")
-
-# ─── Proceso principal ─────────────────────────────────────────────────────────
+# ─── Proceso principal con filtro por fecha actual ─────────────────────────────
 
 def normalizar_y_guardar():
     db_config = {
@@ -223,7 +228,6 @@ def normalizar_y_guardar():
     }
 
     ruta_salida = "./public/datos.json"
-    ruta_advertencias = "./public/advertencias_sueldos.json"
     os.makedirs(os.path.dirname(ruta_salida), exist_ok=True)
 
     try:
@@ -236,14 +240,13 @@ def normalizar_y_guardar():
             SELECT id, detalles_json
             FROM convocatorias
             WHERE estado = 'exitoso'
-            AND timestamp_scraping >= NOW() - INTERVAL '24 hours'
+            AND timestamp_scraping >= NOW() - INTERVAL '3 hours'
             ORDER BY timestamp_scraping DESC
         """)
         rows = cur.fetchall()
         print(f"Se encontraron {len(rows)} registros en total.")
 
         lista_limpia = []
-        advertencias = []
 
         for row in rows:
             id_db, blob = row
@@ -252,6 +255,7 @@ def normalizar_y_guardar():
             titulo = capitalizar(data.get("PUESTO", "Sin título"))
             entidad = capitalizar(data.get("ENTIDAD_AVISO", "Desconocido"))
 
+            # CORRECCIÓN de clave con carácter especial
             ubicacion_raw = data.get("Ubicaci¾n", data.get("Ubicación", "No especificada"))
             ubicacion = capitalizar(ubicacion_raw)
 
@@ -268,8 +272,10 @@ def normalizar_y_guardar():
             formacion = req.get("FORMACIÓN ACADÉMICA - PERFIL", "")
             especializacion = req.get("ESPECIALIZACIÓN", "")
 
+            # Lista de niveles
             niveles = inferir_nivel(formacion, especializacion)
 
+            # Construir requisitos unificados
             requisitos = []
             requisitos.extend(dividir_texto_en_lista(formacion))
             requisitos.extend(dividir_texto_en_lista(req.get("EXPERIENCIA", "")))
@@ -279,6 +285,7 @@ def normalizar_y_guardar():
             if espec_limpia and "NO REQUIERE" not in espec_limpia.upper():
                 requisitos.append(f"Especialización en {capitalizar(espec_limpia)}")
 
+            # Deduplicar manteniendo orden
             visto = set()
             req_dedup = []
             for r in requisitos:
@@ -316,57 +323,19 @@ def normalizar_y_guardar():
                 "linkOficial": link_oficial,
                 "modalidad": "Presencial"
             }
-
+            
+            # Calcular si es indexable según los criterios definidos
             item["indexable"] = calcular_indexable(item)
-
+            
             lista_limpia.append(item)
 
-            error_code = clasificar_error_sueldo(sueldo)
-            if error_code != 0:
-                advertencia = {
-                    "id": id_db,
-                    "titulo": titulo,
-                    "entidad": entidad,
-                    "ubicacion": ubicacion,
-                    "sueldo": sueldo,
-                    "error_code": error_code,
-                    "error_descripcion": obtener_descripcion_error(error_code),
-                    "fechaLimite": fecha_limite,
-                    "nroConvocatoria": nro_convocatoria,
-                    "tipoContrato": tipo_contrato,
-                    "linkOficial": link_oficial
-                }
-                advertencias.append(advertencia)
-
-        # ─── GUARDAR DATOS PRINCIPALES ────────────────────────────────────
         with open(ruta_salida, 'w', encoding='utf-8') as f:
             json.dump(lista_limpia, f, ensure_ascii=False, indent=4)
-        print(f"✅ Éxito! {len(lista_limpia)} registros normalizados en '{ruta_salida}'.")
 
-        # ─── GUARDAR ADVERTENCIAS ─────────────────────────────────────────
-        if advertencias:
-            advertencias.sort(key=lambda x: (x['error_code'], -x['sueldo']), reverse=True)
-
-            resumen = {
-                "fecha_generacion": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "total_advertencias": len(advertencias),
-                "errores_bajos": sum(1 for a in advertencias if a['error_code'] == 1),
-                "errores_altos": sum(1 for a in advertencias if a['error_code'] == 2),
-                "advertencias": advertencias
-            }
-
-            with open(ruta_advertencias, 'w', encoding='utf-8') as f:
-                json.dump(resumen, f, ensure_ascii=False, indent=4)
-            print(f"⚠️  {len(advertencias)} advertencias de sueldo guardadas en '{ruta_advertencias}'.")
-            print(f"   - Errores bajos (< S/ 400): {resumen['errores_bajos']}")
-            print(f"   - Errores altos (> S/ 20,000): {resumen['errores_altos']}")
-        else:
-            print("✅ No se encontraron errores de sueldo. No se generó archivo de advertencias.")
+        print(f"✅ ¡Éxito! Se han normalizado {len(lista_limpia)} registros (solo los de hoy) en '{ruta_salida}'.")
 
     except Exception as e:
         print(f"❌ Error al procesar: {e}")
-        import traceback
-        traceback.print_exc()
 
     finally:
         if 'cur' in locals(): cur.close()
